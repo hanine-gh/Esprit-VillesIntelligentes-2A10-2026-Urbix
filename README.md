@@ -1,1 +1,21 @@
-# Esprit-VillesIntelligentes-2A10-2026-Urbix
+# Urbix – Smart Cities Platform
+
+## Overview
+
+## Features
+
+## Tech Stack
+
+### Frontend
+
+### Backend
+
+## Architecture
+
+## Contributors
+
+## Academic Context
+
+## Getting Started
+
+## Acknowledgments

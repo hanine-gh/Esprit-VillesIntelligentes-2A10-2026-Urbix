@@ -64,7 +64,7 @@ The Back Office is designed for administrators. It allows them to:
 
 This project was developed by:
 
-- Ahmed Hajjeji
+- Ahmed Hajjaji
 - Hassen Bessoud
 - Hanine Ghrab
 - Ali Wizani

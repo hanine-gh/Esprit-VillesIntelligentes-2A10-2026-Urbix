@@ -8,7 +8,7 @@ The platform uses technology and geolocation to help citizens plan and follow th
 
 It includes three transportation services:
 - Traditional urban buses.
-- Smart on-demand buses inspired by InDrive.
+- Smart on-demand buses.
 - Metro and train services.
 
 Users can track vehicles in real time, check schedules, view estimated arrival times (ETA), locate stations and request home pickup for on-demand buses.

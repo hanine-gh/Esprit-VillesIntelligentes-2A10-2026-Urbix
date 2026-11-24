@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Terminer &amp; noter - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
+						<p>Clôture du trajet &amp; évaluation</p>
+					</div>
+				</div>
+			</header>
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li class="current"><a href="terminer.html">Terminer</a></li>
+				</ul>
+			</nav>
+			<section id="main">
+				<div class="container">
+					<section class="box">
+						<h2 class="major"><span>Terminer et noter la location</span></h2>
+						<form id="formTerminer">
+							<div class="row gtr-50">
+								<div class="col-6 col-12-small">
+									<label for="selectLoc">Location active</label>
+									<select id="selectLoc"></select>
+								</div>
+								<div class="col-6 col-12-small">
+									<label for="stationRetourReel">Station de retour réelle</label>
+									<select id="stationRetourReel">
+										<option value="Station Centre Ville">Station Centre Ville</option>
+										<option value="Station Campus Nord">Station Campus Nord</option>
+										<option value="Station Gare Centrale">Station Gare Centrale</option>
+										<option value="Station Parc Urbain">Station Parc Urbain</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<label for="noteVehicule">Note sur 5</label>
+									<select id="noteVehicule">
+										<option value="5">5 / 5 — Excellent</option>
+										<option value="4">4 / 5 — Bien</option>
+										<option value="3">3 / 5 — Moyen</option>
+										<option value="2">2 / 5 — Passable</option>
+										<option value="1">1 / 5 — Mauvais</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<ul class="actions">
+										<li><button type="submit" class="button">Clôturer et libérer le véhicule</button></li>
+										<li><a href="mobilite.html" class="button alt">Retour</a></li>
+									</ul>
+								</div>
+							</div>
+						</form>
+					</section>
+				</div>
+			</section>
+		</div>
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"vehicules":[],"locations":[]}');
+			const params = new URLSearchParams(window.location.search);
+			const targetId = params.get('loc') || state.selectedLocationId || '';
+
+			const selectLoc = document.getElementById('selectLoc');
+			const actives = state.locations.filter(l => l.statut === 'reserve' || l.statut === 'encours');
+			selectLoc.innerHTML = actives.length
+				? actives.map(l => `<option value="${l.id}" ${l.id === targetId ? 'selected' : ''}>${l.id} — ${l.vehiculeNom}</option>`).join('')
+				: '<option value="">Aucune location active</option>';
+
+			selectLoc.addEventListener('change', () => {
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (l && l.stationRetour) document.getElementById('stationRetourReel').value = l.stationRetour;
+			});
+			selectLoc.dispatchEvent(new Event('change'));
+
+			document.getElementById('formTerminer').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (!l) return;
+				const retour = document.getElementById('stationRetourReel').value;
+				const note = parseInt(document.getElementById('noteVehicule').value, 10) || 5;
+				l.stationRetour = retour;
+				l.noteDonnee = note;
+				l.statut = 'termine';
+
+				const v = state.vehicules.find(item => item.id === l.vehiculeId);
+				if (v) {
+					const ancienneMoy = Number(v.noteMoyenne) || 5;
+					const ancienCount = Number(v.avisCount) || 0;
+					v.noteMoyenne = ((ancienneMoy * ancienCount) + note) / (ancienCount + 1);
+					v.avisCount = ancienCount + 1;
+					v.statut = 'disponible';
+					v.station = retour;
+				}
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+				window.location.href = 'mobilite.html';
+			});
+		</script>
+	</body>
+</html>

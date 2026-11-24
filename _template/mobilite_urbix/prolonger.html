@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Prolonger une location - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
+						<p>Prolonger la durée &amp; changer la station de retour</p>
+					</div>
+				</div>
+			</header>
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li class="current"><a href="prolonger.html">Prolonger</a></li>
+				</ul>
+			</nav>
+			<section id="main">
+				<div class="container">
+					<section class="box">
+						<h2 class="major"><span>Prolonger une location</span></h2>
+						<form id="formProlonger">
+							<div class="row gtr-50">
+								<div class="col-6 col-12-small">
+									<label for="selectLoc">Location active</label>
+									<select id="selectLoc"></select>
+								</div>
+								<div class="col-6 col-12-small">
+									<label for="heuresAjout">Heures supplémentaires</label>
+									<select id="heuresAjout">
+										<option value="1">+1 heure</option>
+										<option value="2">+2 heures</option>
+										<option value="4">+4 heures</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<label for="stationRetour">Station de retour prévue</label>
+									<select id="stationRetour">
+										<option value="Station Centre Ville">Station Centre Ville</option>
+										<option value="Station Campus Nord">Station Campus Nord</option>
+										<option value="Station Gare Centrale">Station Gare Centrale</option>
+										<option value="Station Parc Urbain">Station Parc Urbain</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<p id="apercuProlongation"></p>
+									<ul class="actions">
+										<li><button type="submit" class="button">Valider la prolongation</button></li>
+										<li><a href="mobilite.html" class="button alt">Retour</a></li>
+									</ul>
+								</div>
+							</div>
+						</form>
+					</section>
+				</div>
+			</section>
+		</div>
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"vehicules":[],"locations":[]}');
+			const params = new URLSearchParams(window.location.search);
+			const targetId = params.get('loc') || state.selectedLocationId || '';
+
+			const selectLoc = document.getElementById('selectLoc');
+			const actives = state.locations.filter(l => l.statut === 'reserve' || l.statut === 'encours');
+			selectLoc.innerHTML = actives.length
+				? actives.map(l => `<option value="${l.id}" ${l.id === targetId ? 'selected' : ''}>${l.id} — ${l.vehiculeNom} (${l.dureeHeures}h)</option>`).join('')
+				: '<option value="">Aucune location active</option>';
+
+			function majApercu() {
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				const ajout = parseInt(document.getElementById('heuresAjout').value, 10) || 1;
+				if (!l) { document.getElementById('apercuProlongation').textContent = ''; return; }
+				const nouvelleDuree = l.dureeHeures + ajout;
+				const supplement = (l.tarifHeure || 5) * ajout;
+				document.getElementById('apercuProlongation').innerHTML = `Nouvelle durée : <strong>${nouvelleDuree}h</strong> | Supplément : <strong>+${supplement.toFixed(2)} DT</strong> | Nouveau total : <strong>${(Number(l.montant) + supplement).toFixed(2)} DT</strong>`;
+			}
+			selectLoc.addEventListener('change', () => {
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (l && l.stationRetour) document.getElementById('stationRetour').value = l.stationRetour;
+				majApercu();
+			});
+			document.getElementById('heuresAjout').addEventListener('change', majApercu);
+			selectLoc.dispatchEvent(new Event('change'));
+
+			document.getElementById('formProlonger').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (!l) return;
+				const ajout = parseInt(document.getElementById('heuresAjout').value, 10) || 1;
+				l.dureeHeures += ajout;
+				l.montant = Number(l.montant) + ((l.tarifHeure || 5) * ajout);
+				l.stationRetour = document.getElementById('stationRetour').value;
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+				window.location.href = 'mobilite.html';
+			});
+		</script>
+	</body>
+</html>

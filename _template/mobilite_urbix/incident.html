@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Signaler un incident - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
+						<p>Signalement d'incident &amp; mise en maintenance</p>
+					</div>
+				</div>
+			</header>
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li class="current"><a href="incident.html">Incident</a></li>
+				</ul>
+			</nav>
+			<section id="main">
+				<div class="container">
+					<section class="box">
+						<h2 class="major"><span>Signaler un incident</span></h2>
+						<form id="formIncident">
+							<div class="row gtr-50">
+								<div class="col-6 col-12-small">
+									<label for="selectLoc">Location concernée</label>
+									<select id="selectLoc"></select>
+								</div>
+								<div class="col-6 col-12-small">
+									<label for="typeIncident">Type d'incident</label>
+									<select id="typeIncident">
+										<option value="Batterie faible">Batterie faible</option>
+										<option value="Pneu crevé">Pneu crevé</option>
+										<option value="Problème de frein / éclairage">Problème de frein / éclairage</option>
+										<option value="Autre anomalie">Autre anomalie</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<ul class="actions">
+										<li><button type="submit" class="button">Déclarer et mettre en maintenance</button></li>
+										<li><a href="mobilite.html" class="button alt">Retour</a></li>
+									</ul>
+								</div>
+							</div>
+						</form>
+					</section>
+				</div>
+			</section>
+		</div>
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"vehicules":[],"locations":[]}');
+			const params = new URLSearchParams(window.location.search);
+			const targetId = params.get('loc') || state.selectedLocationId || '';
+
+			const selectLoc = document.getElementById('selectLoc');
+			const actives = state.locations.filter(l => l.statut === 'reserve' || l.statut === 'encours');
+			selectLoc.innerHTML = actives.length
+				? actives.map(l => `<option value="${l.id}" ${l.id === targetId ? 'selected' : ''}>${l.id} — ${l.vehiculeNom}</option>`).join('')
+				: '<option value="">Aucune location active</option>';
+
+			document.getElementById('formIncident').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (!l) return;
+				const motif = document.getElementById('typeIncident').value;
+				l.incident = motif;
+				l.statut = 'termine';
+				const v = state.vehicules.find(item => item.id === l.vehiculeId);
+				if (v) v.statut = 'maintenance';
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+				window.location.href = 'mobilite.html';
+			});
+		</script>
+	</body>
+</html>

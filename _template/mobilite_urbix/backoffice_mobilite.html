@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Back-Office Flotte &amp; Locations - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<style>
+			.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1em; margin-bottom: 1.5em; }
+			.kpi-card { background: #f8f9fa; border: 1px solid #dfe3e6; border-top: 4px solid #b1ddab; border-radius: 6px; padding: 1em; text-align: center; }
+			.kpi-card .valeur { font-size: 1.6em; font-weight: 800; color: #2e383f; display: block; }
+			.kpi-card .libelle { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7770; }
+			.badge-statut { display: inline-block; padding: 0.2em 0.6em; border-radius: 4px; font-size: 0.78em; font-weight: 700; text-transform: uppercase; }
+			.statut-disponible { background: #e6f7ed; color: #1e7e46; }
+			.statut-reserve { background: #fff4e5; color: #b25e09; }
+			.statut-encours { background: #e6f0ff; color: #1d5bbf; }
+			.statut-maintenance { background: #fdecec; color: #b42318; }
+			.statut-termine { background: #f0f1f3; color: #475467; }
+			.bo-table-wrap { overflow-x: auto; }
+			table.bo-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+			table.bo-table th, table.bo-table td { padding: 0.75em; border-bottom: 1px solid #e5e5e5; text-align: left; vertical-align: middle; }
+			table.bo-table th { background: #f4f6f5; font-weight: 700; }
+			.inline-input { width: 85px !important; display: inline-block !important; padding: 0.3em 0.5em !important; height: auto !important; }
+			.actions-cell { display: flex; flex-wrap: wrap; gap: 0.35em; }
+			.actions-cell .button.small { padding: 0.35em 0.7em; font-size: 0.75em; height: auto; line-height: 1.3; }
+			.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1em; }
+			.alerte-feedback { padding: 0.8em 1.2em; border-radius: 4px; background: #eef6ee; border: 1px solid #b1ddab; color: #234e26; margin-bottom: 1.2em; display: none; }
+		</style>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="backoffice_mobilite.html" id="logo">URBIX — BACK-OFFICE</a></h1>
+						<p>Administration de la flotte (Moto, Trottinette, Vélo) &amp; Supervision des locations</p>
+					</div>
+				</div>
+			</header>
+
+			<!-- Nav -->
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office (Client)</a></li>
+					<li class="current"><a href="backoffice_mobilite.html">Back-Office (Admin)</a></li>
+					<li><a href="reserver.html">Réserver</a></li>
+					<li><a href="prolonger.html">Prolonger</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main -->
+			<section id="main">
+				<div class="container">
+					<div class="row gtr-200">
+
+						<div class="col-12">
+							<div id="feedbackBox" class="alerte-feedback"></div>
+
+							<!-- Tableau de bord KPIs -->
+							<section class="box">
+								<h2 class="major"><span>Tableau de bord — Indicateurs clés</span></h2>
+								<div class="kpi-grid" id="kpiContainer"></div>
+							</section>
+						</div>
+
+						<!-- Formulaire Back-Office : Ajouter un véhicule au parc -->
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Ajouter un véhicule au parc</span></h2>
+								<form id="formAjoutVehicule">
+									<div class="form-grid">
+										<div>
+											<label for="newNom">Nom du modèle</label>
+											<input type="text" id="newNom" placeholder="Ex: Moto Urbix R300" required />
+										</div>
+										<div>
+											<label for="newType">Catégorie</label>
+											<select id="newType">
+												<option value="moto">Moto</option>
+												<option value="trottinette">Trottinette</option>
+												<option value="velo">Vélo</option>
+											</select>
+										</div>
+										<div>
+											<label for="newTarif">Tarif horaire (DT/h)</label>
+											<input type="number" id="newTarif" min="1" step="0.5" value="10" required />
+										</div>
+										<div>
+											<label for="newAutonomie">Batterie / Autonomie</label>
+											<input type="text" id="newAutonomie" value="100%" required />
+										</div>
+										<div>
+											<label for="newStation">Station d'affectation</label>
+											<select id="newStation">
+												<option value="Station Centre Ville">Station Centre Ville</option>
+												<option value="Station Campus Nord">Station Campus Nord</option>
+												<option value="Station Gare Centrale">Station Gare Centrale</option>
+												<option value="Station Parc Urbain">Station Parc Urbain</option>
+											</select>
+										</div>
+										<div>
+											<label for="newImage">Photo du véhicule</label>
+											<select id="newImage">
+												<option value="../images/urbix-moto.png">urbix-moto.png</option>
+												<option value="../images/voltrider.png">voltrider.png</option>
+												<option value="../images/scootcity.png">scootcity.png</option>
+												<option value="../images/glidemax.png">glidemax.png</option>
+												<option value="../images/velo-vassist.png">velo-vassist.png</option>
+												<option value="../images/ecoride.png">ecoride.png</option>
+											</select>
+										</div>
+									</div>
+									<ul class="actions" style="margin-top: 1.2em;">
+										<li><button type="submit" class="button">Ajouter au catalogue Front-Office</button></li>
+										<li><a href="mobilite.html" class="button alt">Voir le Front-Office</a></li>
+									</ul>
+								</form>
+							</section>
+						</div>
+
+						<!-- Gestion de la flotte (Modifier tarif, Maintenance, Supprimer) -->
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Gestion de la flotte &amp; Maintenance</span></h2>
+								<div class="bo-table-wrap">
+									<table class="bo-table">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th>Véhicule</th>
+												<th>Type</th>
+												<th>Station</th>
+												<th>Statut</th>
+												<th>Note</th>
+												<th>Tarif (DT/h)</th>
+												<th>Actions Admin</th>
+											</tr>
+										</thead>
+										<tbody id="tableFlotteBody"></tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+
+						<!-- Supervision des réservations / locations -->
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Supervision de toutes les locations</span></h2>
+								<div style="margin-bottom: 1em; display: flex; flex-wrap: wrap; gap: 0.5em; align-items: center;">
+									<label for="filtreStatutLoc" style="margin: 0;">Filtrer par statut :</label>
+									<select id="filtreStatutLoc" style="width: auto;">
+										<option value="tous">Toutes les locations</option>
+										<option value="reserve">Réservées</option>
+										<option value="encours">En cours</option>
+										<option value="termine">Terminées / Annulées</option>
+									</select>
+									<button type="button" class="button alt small" id="btnPurgerTerminees" style="margin-left: auto;">Purger les terminées</button>
+								</div>
+								<div class="bo-table-wrap">
+									<table class="bo-table">
+										<thead>
+											<tr>
+												<th>Réf.</th>
+												<th>Véhicule</th>
+												<th>Départ → Retour</th>
+												<th>Durée</th>
+												<th>Montant</th>
+												<th>Statut</th>
+												<th>Détails / Incident</th>
+												<th>Actions Admin</th>
+											</tr>
+										</thead>
+										<tbody id="tableLocationsBody"></tbody>
+									</table>
+								</div>
+							</section>
+						</div>
+
+					</div>
+				</div>
+			</section>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<div id="copyright">
+						<ul class="menu">
+							<li>&copy; URBIX Smart City — Back-Office</li><li>Template: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
+
+		</div>
+
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+
+			const DEFAULT_IMAGES_BY_ID = {
+				V1: '../images/urbix-moto.png',
+				V2: '../images/voltrider.png',
+				V3: '../images/scootcity.png',
+				V4: '../images/glidemax.png',
+				V5: '../images/velo-vassist.png',
+				V6: '../images/ecoride.png'
+			};
+
+			const DEFAULT_STATE = {
+				filtre: 'moto',
+				selectedVehiculeId: 'V1',
+				selectedLocationId: '',
+				vehicules: [
+					{ id: 'V1', nom: 'Moto Urbix X125', type: 'moto', tarifHeure: 12, autonomie: '88%', station: 'Station Centre Ville', statut: 'disponible', noteMoyenne: 4.8, avisCount: 14, image: '../images/urbix-moto.png' },
+					{ id: 'V2', nom: 'Moto VoltRoute 250', type: 'moto', tarifHeure: 15, autonomie: '94%', station: 'Station Parc Urbain', statut: 'disponible', noteMoyenne: 4.7, avisCount: 11, image: '../images/voltrider.png' },
+					{ id: 'V3', nom: 'Trottinette ScootCity Pro', type: 'trottinette', tarifHeure: 4, autonomie: '92%', station: 'Station Campus Nord', statut: 'disponible', noteMoyenne: 4.6, avisCount: 22, image: '../images/scootcity.png' },
+					{ id: 'V4', nom: 'Trottinette GlideMax', type: 'trottinette', tarifHeure: 5, autonomie: '76%', station: 'Station Gare Centrale', statut: 'disponible', noteMoyenne: 4.5, avisCount: 16, image: '../images/glidemax.png' },
+					{ id: 'V5', nom: 'Vélo Urbain V-Assist', type: 'velo', tarifHeure: 5, autonomie: '81%', station: 'Station Gare Centrale', statut: 'disponible', noteMoyenne: 4.9, avisCount: 19, image: '../images/velo-vassist.png' },
+					{ id: 'V6', nom: 'Vélo EcoRide City', type: 'velo', tarifHeure: 3, autonomie: '100%', station: 'Station Centre Ville', statut: 'disponible', noteMoyenne: 4.8, avisCount: 27, image: '../images/ecoride.png' }
+				],
+				locations: []
+			};
+
+			let state = loadState();
+
+			function loadState() {
+				try {
+					const raw = localStorage.getItem(STORAGE_KEY);
+					if (raw) {
+						const parsed = JSON.parse(raw);
+						if (Array.isArray(parsed.vehicules)) {
+							parsed.vehicules.forEach(v => {
+								if (!v.image || v.image.includes('pic0') || v.image.endsWith('.jpg') || !v.image.startsWith('../images/')) {
+									v.image = DEFAULT_IMAGES_BY_ID[v.id] || '../images/urbix-moto.png';
+								}
+							});
+						}
+						return parsed;
+					}
+				} catch (e) {}
+				return JSON.parse(JSON.stringify(DEFAULT_STATE));
+			}
+
+			function saveState() {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+			}
+
+			function showFeedback(msg) {
+				const box = document.getElementById('feedbackBox');
+				box.textContent = msg;
+				box.style.display = 'block';
+				clearTimeout(box._t);
+				box._t = setTimeout(() => { box.style.display = 'none'; }, 4000);
+			}
+
+			function formatStatut(statut) {
+				const map = {
+					disponible: ['Disponible', 'statut-disponible'],
+					reserve: ['Réservé', 'statut-reserve'],
+					encours: ['En cours', 'statut-encours'],
+					maintenance: ['Maintenance', 'statut-maintenance'],
+					termine: ['Terminé', 'statut-termine']
+				};
+				const [label, cls] = map[statut] || [statut, 'statut-termine'];
+				return `<span class="badge-statut ${cls}">${label}</span>`;
+			}
+
+			function renderKPIs() {
+				const totalParc = state.vehicules.length;
+				const dispos = state.vehicules.filter(v => v.statut === 'disponible').length;
+				const enLocation = state.vehicules.filter(v => v.statut === 'reserve' || v.statut === 'encours').length;
+				const enMaintenance = state.vehicules.filter(v => v.statut === 'maintenance').length;
+				const caTotal = state.locations
+					.filter(l => !l.annulee)
+					.reduce((acc, l) => acc + (Number(l.montant) || 0), 0);
+
+				document.getElementById('kpiContainer').innerHTML = `
+					<div class="kpi-card"><span class="valeur">${totalParc}</span><span class="libelle">Parc total</span></div>
+					<div class="kpi-card"><span class="valeur">${dispos}</span><span class="libelle">Disponibles</span></div>
+					<div class="kpi-card"><span class="valeur">${enLocation}</span><span class="libelle">Réservés / En cours</span></div>
+					<div class="kpi-card"><span class="valeur">${enMaintenance}</span><span class="libelle">En maintenance</span></div>
+					<div class="kpi-card"><span class="valeur">${caTotal.toFixed(2)} DT</span><span class="libelle">Revenus générés</span></div>
+				`;
+			}
+
+			function renderTableFlotte() {
+				const tbody = document.getElementById('tableFlotteBody');
+				tbody.innerHTML = state.vehicules.map(v => `
+					<tr>
+						<td><strong>${v.id}</strong></td>
+						<td>${v.nom}</td>
+						<td>${v.type.toUpperCase()}</td>
+						<td>${v.station}</td>
+						<td>${formatStatut(v.statut)}</td>
+						<td>${v.noteMoyenne.toFixed(1)}/5 (${v.avisCount})</td>
+						<td>
+							<input type="number" class="inline-input" id="tarif-${v.id}" value="${v.tarifHeure}" min="1" step="0.5" />
+							<button type="button" class="button small" onclick="modifierTarif('${v.id}')">OK</button>
+						</td>
+						<td>
+							<div class="actions-cell">
+								${v.statut === 'disponible'
+									? `<button type="button" class="button alt small" onclick="basculerMaintenance('${v.id}', 'maintenance')">Maintenance</button>`
+									: v.statut === 'maintenance'
+										? `<button type="button" class="button small" onclick="basculerMaintenance('${v.id}', 'disponible')">Remettre dispo</button>`
+										: `<button type="button" class="button alt small" disabled>En location</button>`
+								}
+								<button type="button" class="button alt small" onclick="supprimerVehicule('${v.id}')">Supprimer</button>
+							</div>
+						</td>
+					</tr>
+				`).join('');
+			}
+
+			function renderTableLocations() {
+				const tbody = document.getElementById('tableLocationsBody');
+				const filtre = document.getElementById('filtreStatutLoc').value;
+				const liste = state.locations.filter(l => filtre === 'tous' || l.statut === filtre);
+
+				if (liste.length === 0) {
+					tbody.innerHTML = '<tr><td colspan="8">Aucune location pour ce filtre.</td></tr>';
+					return;
+				}
+
+				tbody.innerHTML = liste.map(l => {
+					const active = l.statut === 'reserve' || l.statut === 'encours';
+					const details = [
+						l.annulee ? 'Annulée' : '',
+						l.incident ? 'Incident : ' + l.incident : '',
+						l.noteDonnee ? 'Note : ' + l.noteDonnee + '/5' : ''
+					].filter(Boolean).join(' | ') || '—';
+
+					return `
+						<tr>
+							<td><strong>${l.id}</strong></td>
+							<td>${l.vehiculeNom}</td>
+							<td>${l.stationDepart} → ${l.stationRetour}</td>
+							<td>${l.dureeHeures}h</td>
+							<td><strong>${Number(l.montant).toFixed(2)} DT</strong></td>
+							<td>${formatStatut(l.statut)}</td>
+							<td>${details}</td>
+							<td>
+								<div class="actions-cell">
+									${active
+										? `<button type="button" class="button small" onclick="forcerCloture('${l.id}')">Forcer fin</button>`
+										: ''
+									}
+									<button type="button" class="button alt small" onclick="supprimerLocationAdmin('${l.id}')">Supprimer</button>
+								</div>
+							</td>
+						</tr>
+					`;
+				}).join('');
+			}
+
+			// Action Admin 1 : Ajouter un véhicule
+			document.getElementById('formAjoutVehicule').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const nom = document.getElementById('newNom').value.trim();
+				if (!nom) return;
+
+				const nouveau = {
+					id: 'V' + Date.now().toString().slice(-4),
+					nom,
+					type: document.getElementById('newType').value,
+					tarifHeure: parseFloat(document.getElementById('newTarif').value) || 5,
+					autonomie: document.getElementById('newAutonomie').value.trim() || '100%',
+					station: document.getElementById('newStation').value,
+					statut: 'disponible',
+					noteMoyenne: 5.0,
+					avisCount: 1,
+					image: document.getElementById('newImage').value
+				};
+
+				state.vehicules.push(nouveau);
+				document.getElementById('newNom').value = '';
+				renderAll();
+				showFeedback(`Véhicule "${nouveau.nom}" ajouté au catalogue Front-Office.`);
+			});
+
+			// Action Admin 2 : Modifier le tarif horaire
+			function modifierTarif(vId) {
+				const v = state.vehicules.find(item => item.id === vId);
+				const input = document.getElementById('tarif-' + vId);
+				if (!v || !input) return;
+				const nouveauTarif = parseFloat(input.value);
+				if (isNaN(nouveauTarif) || nouveauTarif <= 0) return;
+				v.tarifHeure = nouveauTarif;
+				renderAll();
+				showFeedback(`Tarif de ${v.nom} mis à jour : ${nouveauTarif} DT/h.`);
+			}
+
+			// Action Admin 3 : Basculer Maintenance / Disponible
+			function basculerMaintenance(vId, nouveauStatut) {
+				const v = state.vehicules.find(item => item.id === vId);
+				if (!v) return;
+				v.statut = nouveauStatut;
+				renderAll();
+				showFeedback(`Statut de ${v.nom} passé à "${nouveauStatut}".`);
+			}
+
+			// Action Admin 4 : Supprimer un véhicule
+			function supprimerVehicule(vId) {
+				const v = state.vehicules.find(item => item.id === vId);
+				if (!v) return;
+				if (v.statut === 'reserve' || v.statut === 'encours') {
+					showFeedback('Impossible de supprimer un véhicule actuellement en location.');
+					return;
+				}
+				state.vehicules = state.vehicules.filter(item => item.id !== vId);
+				renderAll();
+				showFeedback(`Véhicule ${v.nom} retiré du parc.`);
+			}
+
+			// Action Admin 5 : Forcer la clôture d'une location
+			function forcerCloture(locId) {
+				const loc = state.locations.find(l => l.id === locId);
+				if (!loc) return;
+				loc.statut = 'termine';
+				const v = state.vehicules.find(item => item.id === loc.vehiculeId);
+				if (v) {
+					v.statut = 'disponible';
+					v.station = loc.stationRetour;
+				}
+				renderAll();
+				showFeedback(`Location ${loc.id} clôturée par l'administrateur.`);
+			}
+
+			// Action Admin 6 : Supprimer une location
+			function supprimerLocationAdmin(locId) {
+				const idx = state.locations.findIndex(l => l.id === locId);
+				if (idx === -1) return;
+				const loc = state.locations[idx];
+				if (loc.statut === 'reserve' || loc.statut === 'encours') {
+					const v = state.vehicules.find(item => item.id === loc.vehiculeId);
+					if (v) v.statut = 'disponible';
+				}
+				state.locations.splice(idx, 1);
+				renderAll();
+				showFeedback(`Location ${loc.id} supprimée.`);
+			}
+
+			document.getElementById('btnPurgerTerminees').addEventListener('click', function() {
+				state.locations = state.locations.filter(l => l.statut === 'reserve' || l.statut === 'encours');
+				renderAll();
+				showFeedback('Historique des locations terminées purgé.');
+			});
+
+			document.getElementById('filtreStatutLoc').addEventListener('change', renderTableLocations);
+
+			function renderAll() {
+				renderKPIs();
+				renderTableFlotte();
+				renderTableLocations();
+				saveState();
+			}
+
+			renderAll();
+		</script>
+	</body>
+</html>

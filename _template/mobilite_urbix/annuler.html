@@ -1,0 +1,96 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Annuler ou supprimer - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
+						<p>Annulation ou suppression d'une location</p>
+					</div>
+				</div>
+			</header>
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li class="current"><a href="annuler.html">Annuler</a></li>
+				</ul>
+			</nav>
+			<section id="main">
+				<div class="container">
+					<section class="box">
+						<h2 class="major"><span>Annuler ou supprimer une location</span></h2>
+						<form id="formAnnuler">
+							<label for="selectLoc">Sélectionner une location</label>
+							<select id="selectLoc"></select>
+							<p id="apercuAction" style="margin-top: 1em;"></p>
+							<ul class="actions" style="margin-top: 1em;">
+								<li><button type="submit" class="button" id="btnValider">Confirmer</button></li>
+								<li><a href="mobilite.html" class="button alt">Retour</a></li>
+							</ul>
+						</form>
+					</section>
+				</div>
+			</section>
+		</div>
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"vehicules":[],"locations":[]}');
+			const params = new URLSearchParams(window.location.search);
+			const targetId = params.get('loc') || state.selectedLocationId || '';
+
+			const selectLoc = document.getElementById('selectLoc');
+			selectLoc.innerHTML = state.locations.length
+				? state.locations.map(l => `<option value="${l.id}" ${l.id === targetId ? 'selected' : ''}>${l.id} — ${l.vehiculeNom} (${l.statut})</option>`).join('')
+				: '<option value="">Aucune location</option>';
+
+			function majApercu() {
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (!l) { document.getElementById('apercuAction').textContent = ''; return; }
+				const active = l.statut === 'reserve' || l.statut === 'encours';
+				document.getElementById('apercuAction').textContent = active
+					? 'Cette location sera marquée comme annulée et le véhicule redeviendra disponible.'
+					: 'Cette ligne sera supprimée définitivement de l’historique.';
+				document.getElementById('btnValider').textContent = active ? 'Annuler la location' : 'Supprimer de l’historique';
+			}
+			selectLoc.addEventListener('change', majApercu);
+			majApercu();
+
+			document.getElementById('formAnnuler').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const idx = state.locations.findIndex(item => item.id === selectLoc.value);
+				if (idx === -1) return;
+				const l = state.locations[idx];
+				const active = l.statut === 'reserve' || l.statut === 'encours';
+				const v = state.vehicules.find(item => item.id === l.vehiculeId);
+
+				if (active) {
+					l.annulee = true;
+					l.statut = 'termine';
+					if (v) {
+						v.statut = 'disponible';
+						v.station = l.stationDepart;
+					}
+				} else {
+					state.locations.splice(idx, 1);
+				}
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+				window.location.href = 'mobilite.html';
+			});
+		</script>
+	</body>
+</html>

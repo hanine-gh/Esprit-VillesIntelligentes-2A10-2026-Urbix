@@ -1,0 +1,366 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Location Moto, Trottinette &amp; Vélo - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<style>
+			.choix-type-bar { display: flex; flex-wrap: wrap; gap: 0.6em; margin-bottom: 1.5em; }
+			.badge-statut { display: inline-block; padding: 0.25em 0.7em; border-radius: 4px; font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+			.statut-disponible { background: #e6f7ed; color: #1e7e46; }
+			.statut-reserve { background: #fff4e5; color: #b25e09; }
+			.statut-encours { background: #e6f0ff; color: #1d5bbf; }
+			.statut-maintenance { background: #fdecec; color: #b42318; }
+			.statut-termine { background: #f0f1f3; color: #475467; }
+			.vehicule-meta { list-style: none; padding: 0; margin: 0.5em 0 1em 0; font-size: 0.9em; }
+			.vehicule-meta li { margin-bottom: 0.35em; }
+			.carte-location-box { border: 1px solid #dfe3e6; border-radius: 6px; padding: 1.2em; margin-bottom: 1.5em; background: #ffffff; }
+			.carte-location-box.selectionnee { border-color: #b1ddab; box-shadow: 0 0 0 2px rgba(177, 221, 171, 0.35); }
+			.pile-liens-actions { display: flex; flex-direction: column; gap: 0.6em; }
+			.pile-liens-actions .button { width: 100%; text-align: center; }
+			.historique-item { border-bottom: 1px solid #e5e5e5; padding: 0.9em 0; }
+			.historique-item:last-child { border-bottom: none; }
+			.actions-ligne { display: flex; flex-wrap: wrap; gap: 0.45em; margin-top: 0.6em; }
+			.actions-ligne .button.small { padding: 0.35em 0.75em; font-size: 0.75em; height: auto; line-height: 1.4; }
+			.alerte-feedback { padding: 0.8em 1.2em; border-radius: 4px; background: #eef6ee; border: 1px solid #b1ddab; color: #234e26; margin-bottom: 1.2em; display: none; }
+		</style>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="../index.html" id="logo">URBIX</a></h1>
+						<p>Mobilité urbaine — Moto, Trottinette &amp; Vélo</p>
+					</div>
+				</div>
+			</header>
+
+			<nav id="nav">
+				<ul>
+					<li><a href="../index.html">Accueil</a></li>
+					<li class="current"><a href="mobilite.html">Location Véhicules</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li><a href="prolonger.html">Prolonger</a></li>
+				</ul>
+			</nav>
+
+			<section id="main">
+				<div class="container">
+					<div class="row gtr-200">
+
+						<div class="col-12">
+							<div id="feedbackBox" class="alerte-feedback"></div>
+						</div>
+
+						<!-- COLONNE GAUCHE : Liste des pages d'actions empilées -->
+						<div class="col-4 col-12-medium">
+							<div class="sidebar">
+								<section class="box">
+									<h2 class="major"><span>Pages d'actions</span></h2>
+									<div class="pile-liens-actions">
+										<a href="reserver.html" class="button small" id="lienReserver">Réserver</a>
+										<a href="demarrer.html" class="button small alt" id="lienDemarrer">Déverrouiller / Démarrer</a>
+										<a href="prolonger.html" class="button small alt" id="lienProlonger">Prolonger</a>
+										<a href="incident.html" class="button small alt" id="lienIncident">Signaler un incident</a>
+										<a href="terminer.html" class="button small alt" id="lienTerminer">Terminer &amp; noter</a>
+										<a href="annuler.html" class="button small alt" id="lienAnnuler">Annuler / Supprimer</a>
+									</div>
+								</section>
+							</div>
+						</div>
+
+						<!-- COLONNE DROITE : Choix Moto / Trottinette / Vélo + Locations disponibles -->
+						<div class="col-8 col-12-medium imp-medium">
+							<div class="content">
+
+								<section class="box">
+									<h2 class="major"><span>Choisir un type et une location</span></h2>
+
+									<div class="choix-type-bar" id="filterButtons">
+										<button type="button" class="button small" data-filter="moto">Moto</button>
+										<button type="button" class="button alt small" data-filter="trottinette">Trottinette</button>
+										<button type="button" class="button alt small" data-filter="velo">Vélo</button>
+										<button type="button" class="button alt small" data-filter="tous">Tous</button>
+										<button type="button" class="button alt small" id="btnResetDemo" style="margin-left: auto;">Réinitialiser</button>
+									</div>
+
+									<div id="flotteContainer"></div>
+								</section>
+
+								<section class="box">
+									<h2 class="major"><span>Mes locations</span></h2>
+									<div id="listeLocations"></div>
+								</section>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</section>
+
+			<footer id="footer">
+				<div class="container">
+					<div id="copyright">
+						<ul class="menu">
+							<li>&copy; URBIX Smart City</li><li>Template: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
+
+		</div>
+
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+
+			const DEFAULT_IMAGES_BY_ID = {
+				V1: '../images/urbix-moto.png',
+				V2: '../images/voltrider.png',
+				V3: '../images/scootcity.png',
+				V4: '../images/glidemax.png',
+				V5: '../images/velo-vassist.png',
+				V6: '../images/ecoride.png'
+			};
+
+			const INITIAL_STATE = {
+				filtre: 'moto',
+				selectedVehiculeId: 'V1',
+				selectedLocationId: '',
+				vehicules: [
+					{ id: 'V1', nom: 'Moto Urbix X125', type: 'moto', tarifHeure: 12, autonomie: '88%', station: 'Station Centre Ville', statut: 'disponible', noteMoyenne: 4.8, avisCount: 14, image: '../images/urbix-moto.png' },
+					{ id: 'V2', nom: 'Moto VoltRoute 250', type: 'moto', tarifHeure: 15, autonomie: '94%', station: 'Station Parc Urbain', statut: 'disponible', noteMoyenne: 4.7, avisCount: 11, image: '../images/voltrider.png' },
+					{ id: 'V3', nom: 'Trottinette ScootCity Pro', type: 'trottinette', tarifHeure: 4, autonomie: '92%', station: 'Station Campus Nord', statut: 'disponible', noteMoyenne: 4.6, avisCount: 22, image: '../images/scootcity.png' },
+					{ id: 'V4', nom: 'Trottinette GlideMax', type: 'trottinette', tarifHeure: 5, autonomie: '76%', station: 'Station Gare Centrale', statut: 'disponible', noteMoyenne: 4.5, avisCount: 16, image: '../images/glidemax.png' },
+					{ id: 'V5', nom: 'Vélo Urbain V-Assist', type: 'velo', tarifHeure: 5, autonomie: '81%', station: 'Station Gare Centrale', statut: 'disponible', noteMoyenne: 4.9, avisCount: 19, image: '../images/velo-vassist.png' },
+					{ id: 'V6', nom: 'Vélo EcoRide City', type: 'velo', tarifHeure: 3, autonomie: '100%', station: 'Station Centre Ville', statut: 'disponible', noteMoyenne: 4.8, avisCount: 27, image: '../images/ecoride.png' }
+				],
+				locations: []
+			};
+
+			let state = loadState();
+			let timerInterval = null;
+
+			function loadState() {
+				try {
+					const raw = localStorage.getItem(STORAGE_KEY);
+					if (raw) {
+						const parsed = JSON.parse(raw);
+						if (Array.isArray(parsed.vehicules)) {
+							parsed.vehicules.forEach(v => {
+								if (!v.image || v.image.includes('pic0') || v.image.endsWith('.jpg') || !v.image.startsWith('../images/')) {
+									v.image = DEFAULT_IMAGES_BY_ID[v.id] || '../images/urbix-moto.png';
+								}
+							});
+						}
+						return parsed;
+					}
+				} catch (e) {}
+				return JSON.parse(JSON.stringify(INITIAL_STATE));
+			}
+
+			function saveState() {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+			}
+
+			function showFeedback(message) {
+				const box = document.getElementById('feedbackBox');
+				box.textContent = message;
+				box.style.display = 'block';
+				clearTimeout(box._timeout);
+				box._timeout = setTimeout(() => { box.style.display = 'none'; }, 4000);
+			}
+
+			function formatStatut(statut) {
+				const map = {
+					disponible: ['Disponible', 'statut-disponible'],
+					reserve: ['Réservé', 'statut-reserve'],
+					encours: ['En cours', 'statut-encours'],
+					maintenance: ['En maintenance', 'statut-maintenance'],
+					termine: ['Terminé', 'statut-termine']
+				};
+				const [label, cls] = map[statut] || [statut, 'statut-termine'];
+				return `<span class="badge-statut ${cls}">${label}</span>`;
+			}
+
+			function mettreAJourLiensActions() {
+				const vParam = state.selectedVehiculeId ? `?vehicule=${encodeURIComponent(state.selectedVehiculeId)}` : '';
+				const lParam = state.selectedLocationId ? `?loc=${encodeURIComponent(state.selectedLocationId)}` : '';
+				document.getElementById('lienReserver').href = `reserver.html${vParam}`;
+				document.getElementById('lienDemarrer').href = `demarrer.html${lParam}`;
+				document.getElementById('lienProlonger').href = `prolonger.html${lParam}`;
+				document.getElementById('lienIncident').href = `incident.html${lParam}`;
+				document.getElementById('lienTerminer').href = `terminer.html${lParam}`;
+				document.getElementById('lienAnnuler').href = `annuler.html${lParam}`;
+			}
+
+			function choisirVehiculeEtAllerReserver(vehiculeId) {
+				state.selectedVehiculeId = vehiculeId;
+				saveState();
+				window.location.href = `reserver.html?vehicule=${encodeURIComponent(vehiculeId)}`;
+			}
+
+			function allerAction(page, locId) {
+				state.selectedLocationId = locId;
+				saveState();
+				window.location.href = `${page}?loc=${encodeURIComponent(locId)}`;
+			}
+
+			function remettreEnService(vehiculeId) {
+				const v = state.vehicules.find(item => item.id === vehiculeId);
+				if (!v) return;
+				v.statut = 'disponible';
+				renderAll();
+				showFeedback(`${v.nom} est de nouveau disponible.`);
+			}
+
+			function renderFiltres() {
+				document.querySelectorAll('#filterButtons button[data-filter]').forEach(btn => {
+					const isActive = btn.dataset.filter === state.filtre;
+					btn.classList.toggle('alt', !isActive);
+				});
+			}
+
+			function renderFlotte() {
+				const container = document.getElementById('flotteContainer');
+				const liste = state.vehicules.filter(v => state.filtre === 'tous' || v.type === state.filtre);
+
+				container.innerHTML = liste.map(v => {
+					const estSelectionnee = v.id === state.selectedVehiculeId;
+					return `
+						<div class="carte-location-box ${estSelectionnee ? 'selectionnee' : ''}">
+							<div class="row gtr-50">
+								<div class="col-4 col-12-small">
+									<span class="image fit" style="margin: 0;"><img src="${v.image}" alt="${v.nom}" /></span>
+								</div>
+								<div class="col-8 col-12-small">
+									<h3 style="margin-bottom: 0.25em;">${v.nom}</h3>
+									<p style="margin-bottom: 0.4em;">
+										${formatStatut(v.statut)} — <strong>${v.tarifHeure} DT / heure</strong>
+									</p>
+									<ul class="vehicule-meta">
+										<li><strong>Type :</strong> ${v.type.toUpperCase()}</li>
+										<li><strong>Disponibilité :</strong> ${v.statut === 'disponible' ? 'Disponible' : 'Non disponible (' + v.statut + ')'}</li>
+										<li><strong>Station :</strong> ${v.station}</li>
+										<li><strong>Batterie :</strong> ${v.autonomie} — <strong>Note :</strong> ${v.noteMoyenne.toFixed(1)}/5 (${v.avisCount} avis)</li>
+									</ul>
+									${v.statut === 'disponible'
+										? `<button type="button" class="button small" onclick="choisirVehiculeEtAllerReserver('${v.id}')">Choisir et réserver</button>`
+										: v.statut === 'maintenance'
+											? `<button type="button" class="button alt small" onclick="remettreEnService('${v.id}')">Remettre disponible</button>`
+											: `<button type="button" class="button alt small" disabled>Indisponible</button>`
+									}
+								</div>
+							</div>
+						</div>
+					`;
+				}).join('');
+			}
+
+			function formatTimer(sec) {
+				const m = Math.floor(sec / 60);
+				const s = sec % 60;
+				return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+			}
+
+			function renderLocations() {
+				const container = document.getElementById('listeLocations');
+				if (state.locations.length === 0) {
+					container.innerHTML = '<p>Aucune location enregistrée pour le moment.</p>';
+					return;
+				}
+
+				if (!state.selectedLocationId && state.locations[0]) {
+					state.selectedLocationId = state.locations[0].id;
+				}
+
+				container.innerHTML = state.locations.map(l => {
+					const active = l.statut === 'reserve' || l.statut === 'encours';
+					return `
+						<div class="historique-item">
+							<div>
+								<strong>${l.id}</strong> — <strong>${l.vehiculeNom}</strong> (${l.vehiculeType})
+								${formatStatut(l.statut)}
+								${l.annulee ? '<span class="badge-statut statut-termine">Annulée</span>' : ''}
+							</div>
+							<p style="margin: 0.4em 0;">
+								Départ : <strong>${l.stationDepart}</strong> → Retour : <strong>${l.stationRetour}</strong> |
+								Durée : <strong>${l.dureeHeures}h</strong> |
+								Total : <strong>${l.montant.toFixed(2)} DT</strong> |
+								PIN : <strong>${l.codePin}</strong>
+								${l.statut === 'encours' ? `| Chrono : <strong id="chrono-${l.id}">${formatTimer(l.elapsedSec || 0)}</strong>` : ''}
+								${l.noteDonnee ? `| Note : <strong>${l.noteDonnee}/5</strong>` : ''}
+								${l.incident ? `| Incident : <strong>${l.incident}</strong>` : ''}
+							</p>
+							<div class="actions-ligne">
+								${l.statut === 'reserve'
+									? `<button type="button" class="button small" onclick="allerAction('demarrer.html', '${l.id}')">Déverrouiller</button>`
+									: ''
+								}
+								${active
+									? `
+										<button type="button" class="button small" onclick="allerAction('prolonger.html', '${l.id}')">Prolonger</button>
+										<button type="button" class="button alt small" onclick="allerAction('incident.html', '${l.id}')">Incident</button>
+										<button type="button" class="button small" onclick="allerAction('terminer.html', '${l.id}')">Terminer</button>
+									`
+									: ''
+								}
+								<button type="button" class="button alt small" onclick="allerAction('annuler.html', '${l.id}')">
+									${active ? 'Annuler' : 'Supprimer'}
+								</button>
+							</div>
+						</div>
+					`;
+				}).join('');
+			}
+
+			function renderAll() {
+				renderFiltres();
+				renderFlotte();
+				renderLocations();
+				mettreAJourLiensActions();
+				saveState();
+			}
+
+			document.querySelectorAll('#filterButtons button[data-filter]').forEach(btn => {
+				btn.addEventListener('click', () => {
+					state.filtre = btn.dataset.filter;
+					renderAll();
+				});
+			});
+
+			document.getElementById('btnResetDemo').addEventListener('click', () => {
+				localStorage.removeItem(STORAGE_KEY);
+				state = JSON.parse(JSON.stringify(INITIAL_STATE));
+				renderAll();
+				showFeedback('Données réinitialisées.');
+			});
+
+			timerInterval = setInterval(() => {
+				let changed = false;
+				state.locations.forEach(l => {
+					if (l.statut === 'encours') {
+						l.elapsedSec = (l.elapsedSec || 0) + 1;
+						const el = document.getElementById('chrono-' + l.id);
+						if (el) el.textContent = formatTimer(l.elapsedSec);
+						changed = true;
+					}
+				});
+				if (changed) saveState();
+			}, 1000);
+
+			renderAll();
+		</script>
+	</body>
+</html>

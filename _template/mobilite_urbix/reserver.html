@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Réserver un véhicule - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
+						<p>Réservation — Moto, Trottinette &amp; Vélo</p>
+					</div>
+				</div>
+			</header>
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li class="current"><a href="reserver.html">Réserver</a></li>
+				</ul>
+			</nav>
+			<section id="main">
+				<div class="container">
+					<section class="box">
+						<h2 class="major"><span>Nouvelle réservation</span></h2>
+						<form id="formReserver">
+							<div class="row gtr-50">
+								<div class="col-6 col-12-small">
+									<label for="selectVehicule">Véhicule disponible</label>
+									<select id="selectVehicule"></select>
+								</div>
+								<div class="col-6 col-12-small">
+									<label for="selectStationDepart">Station de départ</label>
+									<select id="selectStationDepart">
+										<option value="Station Centre Ville">Station Centre Ville</option>
+										<option value="Station Campus Nord">Station Campus Nord</option>
+										<option value="Station Gare Centrale">Station Gare Centrale</option>
+										<option value="Station Parc Urbain">Station Parc Urbain</option>
+									</select>
+								</div>
+								<div class="col-6 col-12-small">
+									<label for="dureeHeures">Durée (heures)</label>
+									<input type="number" id="dureeHeures" min="1" max="24" value="2" required />
+								</div>
+								<div class="col-6 col-12-small">
+									<label for="optionEquipement">Option</label>
+									<select id="optionEquipement">
+										<option value="0|Aucune">Aucune (+0 DT)</option>
+										<option value="4|Casque & Antivol">Casque &amp; Antivol (+4 DT)</option>
+										<option value="6|Assurance Sérénité">Assurance Sérénité (+6 DT)</option>
+									</select>
+								</div>
+								<div class="col-12">
+									<p id="apercuTarif"><strong>Montant estimé : 0.00 DT</strong></p>
+								</div>
+								<div class="col-12">
+									<ul class="actions">
+										<li><button type="submit" class="button">Confirmer la réservation</button></li>
+										<li><a href="mobilite.html" class="button alt">Retour</a></li>
+									</ul>
+								</div>
+							</div>
+						</form>
+					</section>
+				</div>
+			</section>
+		</div>
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"vehicules":[],"locations":[]}');
+			const params = new URLSearchParams(window.location.search);
+			const preselectId = params.get('vehicule') || state.selectedVehiculeId || '';
+
+			const selectV = document.getElementById('selectVehicule');
+			const dispos = state.vehicules.filter(v => v.statut === 'disponible');
+			selectV.innerHTML = dispos.length
+				? dispos.map(v => `<option value="${v.id}" ${v.id === preselectId ? 'selected' : ''}>${v.nom} (${v.type.toUpperCase()} — ${v.tarifHeure} DT/h)</option>`).join('')
+				: '<option value="">Aucun véhicule disponible</option>';
+
+			function calculerMontant() {
+				const v = state.vehicules.find(item => item.id === selectV.value);
+				const h = Math.max(1, parseInt(document.getElementById('dureeHeures').value, 10) || 1);
+				const prixOpt = parseFloat(document.getElementById('optionEquipement').value.split('|')[0]) || 0;
+				const total = v ? (v.tarifHeure * h) + prixOpt : 0;
+				document.getElementById('apercuTarif').innerHTML = `<strong>Montant estimé : ${total.toFixed(2)} DT</strong>`;
+				return total;
+			}
+
+			selectV.addEventListener('change', () => {
+				const v = state.vehicules.find(item => item.id === selectV.value);
+				if (v && v.station) document.getElementById('selectStationDepart').value = v.station;
+				calculerMontant();
+			});
+			document.getElementById('dureeHeures').addEventListener('input', calculerMontant);
+			document.getElementById('optionEquipement').addEventListener('change', calculerMontant);
+			selectV.dispatchEvent(new Event('change'));
+
+			document.getElementById('formReserver').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const v = state.vehicules.find(item => item.id === selectV.value);
+				if (!v || v.statut !== 'disponible') return;
+				const h = Math.max(1, parseInt(document.getElementById('dureeHeures').value, 10) || 1);
+				const [, optLabel] = document.getElementById('optionEquipement').value.split('|');
+				const montant = calculerMontant();
+				const depart = document.getElementById('selectStationDepart').value;
+				const locId = 'LOC-' + Date.now().toString().slice(-5);
+				const codePin = String(Math.floor(1000 + Math.random() * 9000));
+
+				v.statut = 'reserve';
+				v.station = depart;
+				state.locations.unshift({
+					id: locId,
+					vehiculeId: v.id,
+					vehiculeNom: v.nom,
+					vehiculeType: v.type,
+					tarifHeure: v.tarifHeure,
+					optionLabel: optLabel,
+					stationDepart: depart,
+					stationRetour: depart,
+					dureeHeures: h,
+					montant,
+					codePin,
+					statut: 'reserve',
+					elapsedSec: 0,
+					annulee: false
+				});
+				state.selectedLocationId = locId;
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+				window.location.href = 'mobilite.html';
+			});
+		</script>
+	</body>
+</html>

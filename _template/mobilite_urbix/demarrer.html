@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Déverrouiller / Démarrer - URBIX</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
+						<p>Déverrouillage &amp; début de trajet</p>
+					</div>
+				</div>
+			</header>
+			<nav id="nav">
+				<ul>
+					<li><a href="mobilite.html">Front-Office</a></li>
+					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
+					<li class="current"><a href="demarrer.html">Démarrer</a></li>
+				</ul>
+			</nav>
+			<section id="main">
+				<div class="container">
+					<section class="box">
+						<h2 class="major"><span>Déverrouiller une réservation</span></h2>
+						<form id="formDemarrer">
+							<label for="selectLoc">Location réservée</label>
+							<select id="selectLoc"></select>
+							<p id="infoPin" style="margin-top: 1em;"></p>
+							<ul class="actions" style="margin-top: 1em;">
+								<li><button type="submit" class="button">Déverrouiller et lancer le chrono</button></li>
+								<li><a href="mobilite.html" class="button alt">Retour</a></li>
+							</ul>
+						</form>
+					</section>
+				</div>
+			</section>
+		</div>
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.dropotron.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/browser.min.js"></script>
+		<script src="../assets/js/breakpoints.min.js"></script>
+		<script src="../assets/js/util.js"></script>
+		<script src="../assets/js/main.js"></script>
+		<script>
+			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"vehicules":[],"locations":[]}');
+			const params = new URLSearchParams(window.location.search);
+			const targetId = params.get('loc') || state.selectedLocationId || '';
+
+			const selectLoc = document.getElementById('selectLoc');
+			const reserves = state.locations.filter(l => l.statut === 'reserve');
+			selectLoc.innerHTML = reserves.length
+				? reserves.map(l => `<option value="${l.id}" ${l.id === targetId ? 'selected' : ''}>${l.id} — ${l.vehiculeNom} (PIN: ${l.codePin})</option>`).join('')
+				: '<option value="">Aucune location réservée</option>';
+
+			function majPin() {
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				document.getElementById('infoPin').innerHTML = l ? `Code PIN de déverrouillage : <strong>${l.codePin}</strong>` : '';
+			}
+			selectLoc.addEventListener('change', majPin);
+			majPin();
+
+			document.getElementById('formDemarrer').addEventListener('submit', function(e) {
+				e.preventDefault();
+				const l = state.locations.find(item => item.id === selectLoc.value);
+				if (!l) return;
+				l.statut = 'encours';
+				l.elapsedSec = l.elapsedSec || 0;
+				const v = state.vehicules.find(item => item.id === l.vehiculeId);
+				if (v) v.statut = 'encours';
+				state.selectedLocationId = l.id;
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+				window.location.href = 'mobilite.html';
+			});
+		</script>
+	</body>
+</html>

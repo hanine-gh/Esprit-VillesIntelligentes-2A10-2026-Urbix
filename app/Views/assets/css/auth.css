@@ -1,0 +1,487 @@
+/* =====================================================
+   Pages d'authentification et espace utilisateur (frontoffice)
+   Même charte que la popup .auth-modal de main.css
+   ===================================================== */
+
+.auth-card {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #fff;
+    border-top: solid 5px #5a73d6;
+    border-radius: 8px;
+    box-shadow: 0 1em 3em rgba(23, 32, 66, 0.15);
+    padding: 2.25em 2em 2em;
+}
+.auth-card.wide { max-width: 860px; }
+
+.auth-card .auth-title {
+    color: #5b678f;
+    font-size: 1.65em;
+    text-align: center;
+    margin: 0 0 0.25em 0;
+}
+.auth-card .auth-subtitle {
+    color: #7c88b3;
+    text-align: center;
+    font-size: 0.95em;
+    margin: 0 0 1.5em 0;
+}
+
+.auth-card .auth-row { display: flex; gap: 1em; }
+.auth-card .auth-row .auth-field { flex: 1; }
+.auth-card .auth-field { margin-bottom: 1em; }
+.auth-card .auth-field label {
+    display: block;
+    color: #5b678f;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95em;
+    text-transform: none;
+    margin: 0 0 0.35em 0;
+}
+.auth-card .auth-field input,
+.auth-card .auth-field select {
+    display: block;
+    width: 100%;
+    line-height: normal;
+    padding: 0.6em 0.85em;
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    background: #fff;
+    color: #5b678f;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    outline: 0;
+}
+.auth-card .auth-field input:focus,
+.auth-card .auth-field select:focus { border-color: #5a73d6; }
+
+.auth-card .auth-actions { display: flex; gap: 0.75em; margin-top: 1.5em; }
+
+.auth-btn {
+    display: inline-block;
+    padding: 0.75em 1.5em;
+    border: 0;
+    border-radius: 8px;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 1.05em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+}
+.auth-card .auth-btn-primary { background: #5a73d6; color: #fff; }
+.auth-card .auth-btn-primary:hover { background: #3b53a8; color: #fff; }
+.auth-card .auth-btn-secondary { background: #dfe5f7; color: #3b53a8; }
+.auth-card .auth-btn-secondary:hover { background: #cbd5f5; color: #2f448c; }
+
+.auth-switch-link {
+    text-align: center;
+    margin-top: 1.25em;
+    font-size: 0.95em;
+    color: #7c88b3;
+}
+.auth-switch-link a { color: #3b53a8; }
+
+/* Messages */
+.auth-alert {
+    padding: 0.75em 1em;
+    border-radius: 8px;
+    margin-bottom: 1.25em;
+    font-size: 0.95em;
+}
+.auth-alert ul { margin: 0; padding-left: 1.2em; list-style: disc; }
+.auth-alert-error   { background: #fce8e6; color: #b3261e; border: 1px solid #f6c1bc; }
+.auth-alert-success { background: #e6f4ea; color: #137333; border: 1px solid #b7dfc2; }
+.auth-alert-info    { background: #e8f0fe; color: #2f448c; border: 1px solid #c6d4fb; }
+
+/* Badges */
+.auth-badge {
+    display: inline-block;
+    padding: 0.2em 0.8em;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 700;
+    margin-right: 0.4em;
+}
+.auth-badge-user    { background: #e8f0fe; color: #3b53a8; }
+.auth-badge-admin   { background: #fce8e6; color: #b3261e; }
+.auth-badge-service { background: #e6f4ea; color: #137333; }
+
+/* Tableau d'informations */
+.auth-info-table { width: 100%; margin-top: 1.5em; border-collapse: collapse; }
+.auth-info-table th,
+.auth-info-table td {
+    text-align: left;
+    padding: 0.6em 0.75em;
+    border-bottom: solid 1px #dfe5f7;
+}
+.auth-info-table th { color: #7c88b3; font-weight: 700; width: 40%; }
+
+.auth-note { margin-top: 1.5em; color: #7c88b3; font-size: 0.95em; }
+
+/* Lien "Mon espace" / déconnexion dans la barre de navigation */
+#nav li.auth-nav-item > a.auth-logout { background: #b3261e; }
+#nav li.auth-nav-item > a.auth-logout:hover,
+#nav li.auth-nav-item > a.auth-logout:focus { background: #8c1d18; }
+
+@media screen and (max-width: 640px) {
+    .auth-card { padding: 2em 1.25em 1.5em; }
+    .auth-card .auth-row { display: block; }
+}
+
+/* Contrôle de saisie JavaScript : champ invalide + message sous le champ */
+.auth-field input.is-invalid,
+.auth-field select.is-invalid {
+    border-color: #d93025 !important;
+}
+.auth-field-error {
+    display: block;
+    margin-top: 0.3em;
+    color: #b3261e;
+    font-size: 0.85em;
+}
+
+/* =====================================================
+   Page profil (frontoffice) intégrée au thème du site
+   ===================================================== */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 2.5em;
+    align-items: start;
+}
+
+/* Barre latérale */
+.profile-sidebar {
+    background: #f4f6fd;
+    border-top: solid 5px #5a73d6;
+    border-radius: 8px;
+    padding: 2em 1.5em 1.5em;
+    text-align: center;
+}
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    line-height: 96px;
+    margin: 0 auto 1em;
+    border-radius: 100%;
+    background: #5a73d6;
+    color: #fff;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 2.2em;
+    font-weight: 700;
+    box-shadow: 0 0 0 6px #dfe5f7;
+}
+.profile-name {
+    margin: 0;
+    color: #3b53a8;
+    font-family: 'Open Sans Condensed', sans-serif;
+    text-transform: uppercase;
+}
+.profile-email { margin: 0.25em 0 0.75em; color: #7c88b3; font-size: 0.9em; word-break: break-all; }
+.profile-badges { margin: 0 0 1.25em; }
+
+.profile-menu { list-style: none; margin: 0 0 1em; padding: 0; text-align: left; }
+.profile-menu li { margin: 0 0 0.35em; padding: 0; }
+.profile-menu a {
+    display: block;
+    padding: 0.65em 1em;
+    border-radius: 6px;
+    color: #5b678f;
+    text-decoration: none;
+    font-weight: 700;
+    border-left: 3px solid transparent;
+}
+.profile-menu a i { width: 1.4em; text-align: center; margin-right: 0.3em; }
+.profile-menu a:hover { background: #fff; color: #3b53a8; }
+.profile-menu a.active { background: #fff; color: #3b53a8; border-left-color: #5a73d6; }
+.profile-menu a.logout { color: #b3261e; }
+.profile-since { margin: 0; color: #7c88b3; font-size: 0.85em; }
+
+/* Contenu */
+.profile-content { min-width: 0; }
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+}
+.profile-item {
+    background: #f4f6fd;
+    border-radius: 8px;
+    padding: 0.9em 1.1em;
+    border-left: 4px solid #5a73d6;
+}
+.profile-item .label {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #7c88b3;
+    margin-bottom: 0.3em;
+}
+.profile-item .value { color: #3b53a8; font-weight: 700; word-break: break-word; }
+
+.profile-actions { display: flex; gap: 0.75em; margin-top: 2em; flex-wrap: wrap; }
+.profile-content .auth-btn-primary { background: #5a73d6; color: #fff; }
+.profile-content .auth-btn-primary:hover { background: #3b53a8; color: #fff; }
+.profile-content .auth-btn-secondary { background: #dfe5f7; color: #3b53a8; }
+.profile-content .auth-btn-secondary:hover { background: #cbd5f5; color: #2f448c; }
+
+.profile-subtitle {
+    margin: 1.75em 0 1em;
+    padding-top: 1.25em;
+    border-top: solid 2px #dfe5f7;
+    color: #5b678f;
+    font-size: 1.1em;
+}
+.profile-subtitle small { color: #7c88b3; font-weight: 400; font-size: 0.8em; }
+
+/* Champs du formulaire de profil (même style que la popup) */
+.profile-form .auth-row { display: flex; gap: 1em; }
+.profile-form .auth-row .auth-field { flex: 1; }
+.profile-form .auth-field { margin-bottom: 1em; }
+.profile-form .auth-field label {
+    display: block;
+    color: #5b678f;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95em;
+    text-transform: none;
+    margin: 0 0 0.35em 0;
+}
+.profile-form .auth-field input,
+.profile-form .auth-field select {
+    display: block;
+    width: 100%;
+    line-height: normal;
+    padding: 0.6em 0.85em;
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    background: #fff;
+    color: #5b678f;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    outline: 0;
+}
+.profile-form .auth-field input:focus,
+.profile-form .auth-field select:focus { border-color: #5a73d6; }
+
+@media screen and (max-width: 980px) {
+    .profile-layout { grid-template-columns: 1fr; }
+}
+@media screen and (max-width: 640px) {
+    .profile-grid { grid-template-columns: 1fr; }
+    .profile-form .auth-row { display: block; }
+}
+
+/* =====================================================
+   Espace chauffeur : mes trajets et leurs stations
+   ===================================================== */
+.trajet-empty { text-align: center; color: #7c88b3; padding: 2em 0; }
+.trajet-empty i { font-size: 3em; color: #dfe5f7; margin-bottom: 0.5em; }
+
+.trajet-list { display: grid; gap: 2em; }
+.trajet-card {
+    background: #fff;
+    border: solid 2px #dfe5f7;
+    border-top: solid 5px #5a73d6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.trajet-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25em;
+    flex-wrap: wrap;
+    padding: 1.25em 1.5em;
+    background: #f4f6fd;
+}
+.trajet-code {
+    background: #5a73d6;
+    color: #fff;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.3em;
+    padding: 0.35em 0.8em;
+    border-radius: 8px;
+}
+.trajet-title { flex: 1; min-width: 200px; }
+.trajet-title h3 { margin: 0; color: #3b53a8; }
+.trajet-title p { margin: 0.2em 0 0; color: #7c88b3; }
+.trajet-meta { display: flex; align-items: center; gap: 0.75em; color: #5b678f; font-weight: 700; }
+
+.trajet-card-body { padding: 1.25em 1.5em 1.5em; }
+.trajet-card-body h4 { margin: 0 0 1em; color: #5b678f; }
+.trajet-no-station { color: #7c88b3; font-style: italic; }
+
+/* Frise des stations */
+.station-timeline { list-style: none; margin: 0; padding: 0; position: relative; }
+.station-timeline li {
+    display: grid;
+    grid-template-columns: 4em 2.4em 1fr;
+    align-items: center;
+    gap: 0.75em;
+    padding: 0.55em 0;
+    margin: 0;
+    position: relative;
+}
+.station-timeline li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: calc(4em + 0.75em + 1.2em - 1px);
+    top: 50%;
+    height: 100%;
+    border-left: 3px dotted #b9c4ee;
+    z-index: 0;
+}
+.station-time { color: #3b53a8; font-weight: 700; text-align: right; }
+.station-dot {
+    position: relative;
+    z-index: 1;
+    width: 2.4em;
+    height: 2.4em;
+    line-height: 2.4em;
+    border-radius: 100%;
+    background: #5a73d6;
+    color: #fff;
+    text-align: center;
+    font-weight: 700;
+    box-shadow: 0 0 0 4px #e8edfb;
+}
+.station-info strong { display: block; color: #3b53a8; }
+.station-info small { color: #7c88b3; }
+
+/* Le bouton principal du frontoffice garde le même style hors des cartes */
+.trajet-card .auth-btn-primary { background: #5a73d6; color: #fff; }
+.trajet-card .auth-btn-primary:hover { background: #3b53a8; color: #fff; }
+
+@media screen and (max-width: 640px) {
+    .trajet-card-header { padding: 1em; }
+    .trajet-card-body { padding: 1em; }
+}
+
+/* =====================================================
+   Espace chauffeur : mes missions (trajet + bus)
+   ===================================================== */
+.mission-bus-attitre {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    background: #e8f0fe;
+    border-left: 5px solid #5a73d6;
+    border-radius: 8px;
+    padding: 1em 1.25em;
+    margin-bottom: 2em;
+    color: #3b53a8;
+}
+.mission-bus-attitre > i { font-size: 2em; }
+.mission-bus-attitre .label {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #7c88b3;
+}
+
+.mission-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+    padding: 1.25em 1.5em 1.5em;
+}
+.mission-block {
+    background: #f4f6fd;
+    border-radius: 8px;
+    padding: 1em 1.1em;
+    border-left: 4px solid #5a73d6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    color: #5b678f;
+}
+.mission-block .label {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #7c88b3;
+}
+.mission-block strong { color: #3b53a8; font-size: 1.1em; }
+.mission-block a { color: #3b53a8; }
+.mission-bus { border-left-color: #137333; }
+.mission-bus.is-missing { border-left-color: #b3261e; }
+.mission-bus.is-missing strong { color: #b3261e; }
+.mission-card.is-inactive { opacity: 0.65; }
+
+@media screen and (max-width: 980px) {
+    .mission-grid { grid-template-columns: 1fr; }
+}
+
+/* Zone de texte (ex : "Cas de mon bus") : même style que les autres champs */
+.auth-card .auth-field textarea {
+    display: block;
+    width: 100%;
+    min-height: 7em;
+    padding: 0.6em 0.85em;
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    background: #fff;
+    color: #5b678f;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    outline: 0;
+    resize: vertical;
+}
+.auth-card .auth-field textarea:focus { border-color: #5a73d6; }
+.auth-field textarea.is-invalid { border-color: #d93025 !important; }
+
+/* =====================================================
+   Espace voyageur : trajets disponibles + demandes de STOP
+   ===================================================== */
+.voyageur-search { display: flex; gap: 0.75em; margin-bottom: 2em; flex-wrap: wrap; }
+.voyageur-search input[type="text"] {
+    flex: 1;
+    min-width: 220px;
+    padding: 0.6em 0.85em;
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    line-height: normal;
+    color: #5b678f;
+}
+.voyageur-search .auth-btn-primary { background: #5a73d6; color: #fff; }
+.voyageur-search .auth-btn-secondary { background: #dfe5f7; color: #3b53a8; }
+
+.station-stop-link {
+    display: inline-block;
+    margin-top: 0.3em;
+    font-size: 0.85em;
+    font-weight: 700;
+    color: #b3261e;
+    text-decoration: none;
+}
+.station-stop-link:hover { text-decoration: underline; }
+
+.demande-list { display: grid; gap: 1em; }
+.demande-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    flex-wrap: wrap;
+    background: #fff;
+    border: solid 2px #dfe5f7;
+    border-left: 5px solid #5a73d6;
+    border-radius: 8px;
+    padding: 1em 1.25em;
+}
+.demande-main { display: flex; align-items: center; gap: 1em; }
+.demande-main strong { display: block; color: #3b53a8; }
+.demande-main small { display: block; color: #7c88b3; }
+.demande-info { display: block; margin-top: 0.3em; color: #5b678f; font-size: 0.9em; }
+.demande-message { display: block; margin-top: 0.3em; color: #7c88b3; font-size: 0.9em; }
+.demande-side { display: flex; align-items: center; gap: 0.75em; }
+.demande-side .auth-btn-secondary { background: #dfe5f7; color: #3b53a8; }
+.demande-cancel { padding: 0.5em 1em; font-size: 0.95em; }
+.trajet-empty .auth-btn-primary { background: #5a73d6; color: #fff; margin-top: 1em; }

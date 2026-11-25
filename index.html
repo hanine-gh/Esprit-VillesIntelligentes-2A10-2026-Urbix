@@ -1,0 +1,437 @@
+<!DOCTYPE HTML>
+<!--
+    Urbix – Version HTML statique (sans PHP, sans serveur)
+    Double-cliquez sur ce fichier pour voir le site dans le navigateur.
+    Les données (comptes, réservations) sont enregistrées dans le navigateur (localStorage).
+    La version complète avec base de données MySQL est index.php (XAMPP).
+-->
+<html lang="fr">
+<head>
+    <title>Covoiturage | Urbix Smart City</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="app/Views/assets/css/main.css" />
+    <link rel="stylesheet" href="app/Views/assets/css/covoiturage.css" />
+</head>
+<body class="no-sidebar is-preload">
+<div id="page-wrapper">
+
+    <!-- Header -->
+    <header id="header">
+        <div class="logo container">
+            <div>
+                <h1><a href="#accueil" id="logo">Urbix</a></h1>
+                <p>Plateforme de mobilité de la ville intelligente</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Nav -->
+    <nav id="nav">
+        <ul>
+            <li data-nav="accueil"><a href="#accueil">Accueil</a></li>
+            <li data-nav="covoiturage espace">
+                <a href="#covoiturage">Covoiturage</a>
+                <ul>
+                    <li><a href="#covoiturage"><i class="fas fa-search-location" aria-hidden="true"></i> Rechercher un trajet</a></li>
+                    <li><a href="#espace"><i class="fas fa-ticket-alt" aria-hidden="true"></i> Mes réservations</a></li>
+                    <li><a href="#espace"><i class="fas fa-user-circle" aria-hidden="true"></i> Mon espace</a></li>
+                </ul>
+            </li>
+            <li data-nav="module-bus module-bus-demande module-train module-louage module-location module-reparation">
+                <a href="#module=bus">Transports</a>
+                <ul>
+                    <li><a href="#module=bus"><i class="fas fa-bus" aria-hidden="true"></i> Bus urbain</a></li>
+                    <li><a href="#module=bus-demande"><i class="fas fa-shuttle-van" aria-hidden="true"></i> Bus à la demande</a></li>
+                    <li><a href="#module=train"><i class="fas fa-train" aria-hidden="true"></i> Métro &amp; Train</a></li>
+                    <li><a href="#module=louage"><i class="fas fa-taxi" aria-hidden="true"></i> Louage</a></li>
+                    <li><a href="#module=location"><i class="fas fa-car" aria-hidden="true"></i> Location</a></li>
+                    <li><a href="#module=reparation"><i class="fas fa-tools" aria-hidden="true"></i> Réparation</a></li>
+                </ul>
+            </li>
+            <li data-nav="module-missions module-demandes-passagers module-cas-bus module-station">
+                <a href="#module=missions">Espace Chauffeur</a>
+                <ul>
+                    <li><a href="#module=missions"><i class="fas fa-clipboard-list" aria-hidden="true"></i> Missions</a></li>
+                    <li><a href="#module=demandes-passagers"><i class="fas fa-users" aria-hidden="true"></i> Demande de passagers</a></li>
+                    <li><a href="#module=cas-bus"><i class="fas fa-bus-alt" aria-hidden="true"></i> Cas de mon bus</a></li>
+                    <li><a href="#module=station"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Station</a></li>
+                </ul>
+            </li>
+            <li><a href="backoffice/index.php?page=dashboard">Espace Admin</a></li>
+            <li class="auth-nav-item">
+                <a href="#espace" class="auth-trigger" id="nav-user" aria-label="Mon espace" title="Connexion / Mon espace">
+                    <i class="fas fa-user" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- =========================== ACCUEIL =========================== -->
+    <div data-view="accueil" hidden>
+        <section id="banner">
+            <div class="content">
+                <h2>Bienvenue sur Urbix</h2>
+                <p>La mobilité intelligente de votre ville, au même endroit</p>
+                <a href="#covoiturage" class="button">Trouver un covoiturage</a>
+                <a href="#module=bus" class="button">Découvrir les services</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- =========================== COVOITURAGE =========================== -->
+    <div data-view="covoiturage" hidden>
+        <section id="covoit-hero">
+            <div class="container">
+                <div class="hero-titre">
+                    <h2><i class="fas fa-car-side" aria-hidden="true"></i> Covoiturage intelligent</h2>
+                    <p>Où allez-vous ? Urbix trouve et classe pour vous les meilleurs conducteurs.</p>
+                </div>
+
+                <form id="form-recherche" class="recherche-card" novalidate>
+                    <div class="recherche-villes">
+                        <div class="champ">
+                            <label for="depart"><i class="fas fa-dot-circle" aria-hidden="true"></i> Départ</label>
+                            <input type="text" id="depart" name="depart" list="liste-villes" placeholder="Ex. : Tunis (facultatif)" autocomplete="off">
+                            <small class="field-error"></small>
+                        </div>
+                        <button type="button" class="btn-inverser" id="btn-inverser" title="Inverser départ et destination" aria-label="Inverser départ et destination">
+                            <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+                        </button>
+                        <div class="champ">
+                            <label for="destination"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Destination *</label>
+                            <input type="text" id="destination" name="destination" list="liste-villes" placeholder="Ex. : Sousse" autocomplete="off">
+                            <small class="field-error"></small>
+                        </div>
+                    </div>
+                    <div class="recherche-options">
+                        <div class="champ">
+                            <label for="date"><i class="far fa-calendar-alt" aria-hidden="true"></i> Date</label>
+                            <input type="date" id="date" name="date">
+                            <div class="raccourcis">
+                                <button type="button" data-jour="0">Aujourd'hui</button>
+                                <button type="button" data-jour="1">Demain</button>
+                                <button type="button" data-jour="">Peu importe</button>
+                            </div>
+                            <small class="field-error"></small>
+                        </div>
+                        <div class="champ">
+                            <label for="heure"><i class="far fa-clock" aria-hidden="true"></i> Heure souhaitée</label>
+                            <input type="time" id="heure" name="heure">
+                            <small class="field-error"></small>
+                        </div>
+                        <div class="champ">
+                            <label for="places"><i class="fas fa-user-friends" aria-hidden="true"></i> Passagers</label>
+                            <select id="places" name="places">
+                                <option value="1">1 passager</option>
+                                <option value="2">2 passagers</option>
+                                <option value="3">3 passagers</option>
+                                <option value="4">4 passagers</option>
+                            </select>
+                            <small class="field-error"></small>
+                        </div>
+                        <div class="champ">
+                            <label for="prix_max"><i class="fas fa-coins" aria-hidden="true"></i> Prix max (DT)</label>
+                            <input type="text" id="prix_max" name="prix_max" inputmode="decimal" placeholder="Illimité">
+                            <small class="field-error"></small>
+                        </div>
+                    </div>
+                    <button type="submit" class="button large btn-rechercher"><i class="fas fa-search" aria-hidden="true"></i> Rechercher</button>
+                </form>
+                <datalist id="liste-villes"></datalist>
+            </div>
+        </section>
+    </div>
+    <!-- Main (contenu de la vue active) -->
+    <section id="main">
+        <div class="container">
+                <div data-view="accueil" hidden>
+                <section class="box highlight">
+                    <ul class="special">
+                        <li><a href="#covoiturage" class="icon solid fa-search-location"><span class="label">Rechercher</span></a></li>
+                        <li><a href="#module=bus" class="icon solid fa-bus"><span class="label">Bus</span></a></li>
+                        <li><a href="#module=train" class="icon solid fa-train"><span class="label">Train</span></a></li>
+                        <li><a href="#module=reparation" class="icon solid fa-tools"><span class="label">Réparation</span></a></li>
+                    </ul>
+                    <header>
+                        <h2>Se déplacer plus simplement</h2>
+                        <p>Suivi en temps réel, horaires, réservation et covoiturage intelligent</p>
+                    </header>
+                    <p>Urbix utilise la géolocalisation et des recommandations intelligentes pour vous proposer le meilleur
+                        moyen de transport : bus, métro, train, louage, location ou covoiturage.</p>
+                </section>
+                <section class="box features">
+                    <h2 class="major"><span>Nos services</span></h2>
+                    <div class="row">
+                        <div class="col-3 col-6-medium col-12-small">
+                            <section class="box feature">
+                                <a href="#covoiturage" class="image featured"><img src="app/Views/images/pic01.jpg" alt="Covoiturage" /></a>
+                                <h3><a href="#covoiturage">Covoiturage</a></h3>
+                                <p>Saisissez votre destination, comparez les conducteurs et acceptez le trajet qui vous convient.</p>
+                            </section>
+                        </div>
+                        <div class="col-3 col-6-medium col-12-small">
+                            <section class="box feature">
+                                <a href="#module=bus" class="image featured"><img src="app/Views/images/pic02.jpg" alt="Bus" /></a>
+                                <h3><a href="#module=bus">Bus urbain &amp; à la demande</a></h3>
+                                <p>Lignes, horaires, temps d'arrivée estimé et prise en charge à domicile.</p>
+                            </section>
+                        </div>
+                        <div class="col-3 col-6-medium col-12-small">
+                            <section class="box feature">
+                                <a href="#module=train" class="image featured"><img src="app/Views/images/pic03.jpg" alt="Train" /></a>
+                                <h3><a href="#module=train">Métro &amp; Train</a></h3>
+                                <p>Gares, horaires et billets du métro et des trains de la ville.</p>
+                            </section>
+                        </div>
+                        <div class="col-3 col-6-medium col-12-small">
+                            <section class="box feature">
+                                <a href="#module=reparation" class="image featured"><img src="app/Views/images/pic04.jpg" alt="Réparation" /></a>
+                                <h3><a href="#module=reparation">Location &amp; Réparation</a></h3>
+                                <p>Louez un véhicule ou trouvez un garage pour réparer le vôtre.</p>
+                            </section>
+                        </div>
+                    </div>
+                </section>
+                </div>
+                <div data-view="covoiturage" hidden>
+                <section class="box resultats" id="resultats">
+                    <h2 class="major"><span id="resultats-titre">Prochains départs</span></h2>
+                    <p class="notice notice-info" id="resultats-message" hidden></p>
+                    <div class="resultats-barre" id="resultats-barre">
+                        <p class="resultats-compte"><strong id="nb-resultats">0</strong> proposition(s) de conducteurs</p>
+                        <div class="tri" role="group" aria-label="Trier les propositions">
+                            <span>Trier :</span>
+                            <button type="button" class="is-active" data-tri="score"><i class="fas fa-magic" aria-hidden="true"></i> Recommandé</button>
+                            <button type="button" data-tri="prix">Prix</button>
+                            <button type="button" data-tri="depart">Heure</button>
+                            <button type="button" data-tri="note">Note</button>
+                        </div>
+                        <div class="filtres">
+                            <label><input type="checkbox" id="filtre-clim"> Climatisé</label>
+                            <label><input type="checkbox" id="filtre-nonfumeur"> Non-fumeur</label>
+                        </div>
+                    </div>
+                    <div class="liste-trajets" id="liste-trajets"></div>
+                    <div class="vide" id="resultats-vide" hidden>
+                        <i class="fas fa-route" aria-hidden="true"></i>
+                        <h3>Aucun conducteur ne propose ce trajet pour le moment</h3>
+                        <p>Essayez une autre date, une ville voisine ou consultez les autres moyens de transport Urbix.</p>
+                        <ul class="actions">
+                            <li><a class="button" href="#module=louage"><i class="fas fa-taxi" aria-hidden="true"></i> Voir les louages</a></li>
+                            <li><a class="button alt" href="#module=train"><i class="fas fa-train" aria-hidden="true"></i> Voir les trains</a></li>
+                        </ul>
+                    </div>
+                    <p class="vide-filtre" id="vide-filtre" hidden>Aucune proposition ne correspond aux filtres choisis.</p>
+                </section>
+                </div>
+
+                <!-- MON ESPACE (interface utilisateur) -->
+                <div data-view="espace" class="espace-utilisateur" id="espace-contenu" hidden></div>
+
+                <!-- MODULES DES AUTRES MEMBRES -->
+                <div data-view="module" id="module-contenu" hidden></div>
+            </div>
+        </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row gtr-200">
+                <div class="col-12">
+                    <section>
+                        <h2 class="major"><span>À propos d'Urbix</span></h2>
+                        <p><strong>Urbix</strong> est une plateforme de mobilité urbaine intelligente qui réunit bus urbains,
+                            bus à la demande, métro &amp; train, louage, location, réparation de véhicules et covoiturage.
+                            Projet réalisé à <strong>Esprit School of Engineering</strong> – 2A10 Villes Intelligentes, 2026-2027.</p>
+                    </section>
+                </div>
+                <div class="col-12">
+                    <section>
+                        <h2 class="major"><span>Nous contacter</span></h2>
+                        <ul class="contact">
+                            <li><a class="icon brands fa-facebook-f" href="#"><span class="label">Facebook</span></a></li>
+                            <li><a class="icon brands fa-twitter" href="#"><span class="label">Twitter</span></a></li>
+                            <li><a class="icon brands fa-instagram" href="#"><span class="label">Instagram</span></a></li>
+                            <li><a class="icon brands fa-linkedin-in" href="#"><span class="label">LinkedIn</span></a></li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+            <div id="copyright">
+                <ul class="menu">
+                    <li>&copy; Urbix 2026. Tous droits réservés</li><li>Design : <a href="http://html5up.net">HTML5 UP</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Fenêtre connexion / inscription (interface utilisateur) -->
+<div id="auth-modal" class="auth-modal">
+    <a href="#" class="auth-backdrop" aria-label="Fermer la fenêtre"></a>
+    <div class="auth-dialog" role="dialog" aria-labelledby="auth-modal-title">
+        <a href="#" class="auth-close" aria-label="Fermer">&times;</a>
+        <h2 id="auth-modal-title" class="auth-title">Bienvenue</h2>
+        <p class="auth-subtitle">Connectez-vous ou créez un compte pour accéder à votre espace.</p>
+        <p class="auth-error" id="auth-erreur" role="alert" hidden></p>
+
+        <input class="auth-tab-input" type="radio" name="auth-tab" id="auth-tab-login" checked>
+        <input class="auth-tab-input" type="radio" name="auth-tab" id="auth-tab-signin">
+        <div class="auth-tabs">
+            <label for="auth-tab-login" class="auth-tab-label auth-tab-login-label">Connexion</label>
+            <label for="auth-tab-signin" class="auth-tab-label auth-tab-signin-label">Inscription</label>
+        </div>
+
+        <div class="auth-panels">
+            <form class="auth-panel auth-panel-login" id="form-login" novalidate data-validate="login">
+                <div class="auth-field">
+                    <label for="auth-login-email">Email</label>
+                    <input type="email" id="auth-login-email" name="login_email" placeholder="vous@exemple.com" autocomplete="email">
+                    <small class="field-error"></small>
+                </div>
+                <div class="auth-field">
+                    <label for="auth-login-password">Mot de passe</label>
+                    <input type="password" id="auth-login-password" name="login_password" placeholder="Mot de passe" autocomplete="current-password">
+                    <small class="field-error"></small>
+                </div>
+                <p class="recap-info"><i class="fas fa-info-circle" aria-hidden="true"></i> Compte de démo : salma@urbix.tn / Urbix2026</p>
+                <div class="auth-actions">
+                    <button type="submit" class="auth-btn auth-btn-primary">Se connecter</button>
+                    <a href="#" class="auth-btn auth-btn-secondary">Annuler</a>
+                </div>
+                <label for="auth-tab-signin" class="auth-switch">Créer un compte</label>
+            </form>
+
+            <form class="auth-panel auth-panel-signin" id="form-signin" novalidate data-validate="signin">
+                <div class="auth-row">
+                    <div class="auth-field">
+                        <label for="auth-last-name">Nom</label>
+                        <input type="text" id="auth-last-name" name="last_name" placeholder="Nom" autocomplete="family-name">
+                        <small class="field-error"></small>
+                    </div>
+                    <div class="auth-field">
+                        <label for="auth-first-name">Prénom</label>
+                        <input type="text" id="auth-first-name" name="first_name" placeholder="Prénom" autocomplete="given-name">
+                        <small class="field-error"></small>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label for="auth-signin-email">Email</label>
+                    <input type="email" id="auth-signin-email" name="email" placeholder="vous@exemple.com" autocomplete="email">
+                    <small class="field-error"></small>
+                </div>
+                <div class="auth-row">
+                    <div class="auth-field">
+                        <label for="auth-birthdate">Date de naissance</label>
+                        <input type="date" id="auth-birthdate" name="birthdate">
+                        <small class="field-error"></small>
+                    </div>
+                    <div class="auth-field">
+                        <label for="auth-gender">Genre</label>
+                        <select id="auth-gender" name="gender">
+                            <option value="">Choisir...</option>
+                            <option value="homme">Homme</option>
+                            <option value="femme">Femme</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                        <small class="field-error"></small>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label for="auth-phone">Numéro de téléphone</label>
+                    <input type="tel" id="auth-phone" name="phone" placeholder="22 345 678" autocomplete="tel">
+                    <small class="field-error"></small>
+                </div>
+                <div class="auth-field">
+                    <label for="auth-role">Type de compte</label>
+                    <select id="auth-role" name="role">
+                        <option value="">Choisir un type...</option>
+                        <option value="user-normal">Utilisateur normal</option>
+                        <option value="chauffeur-bus">Chauffeur bus</option>
+                        <option value="chauffeur-train">Chauffeur train</option>
+                        <option value="louage">Louage</option>
+                        <option value="covoiturage">Covoiturage</option>
+                        <option value="location">Location</option>
+                        <option value="reparation-vehicule">Réparation de véhicule</option>
+                    </select>
+                    <small class="field-error"></small>
+                </div>
+                <div class="auth-row">
+                    <div class="auth-field">
+                        <label for="auth-password">Mot de passe</label>
+                        <input type="password" id="auth-password" name="password" placeholder="8 caractères min." autocomplete="new-password">
+                        <small class="field-error"></small>
+                    </div>
+                    <div class="auth-field">
+                        <label for="auth-password-confirm">Confirmation</label>
+                        <input type="password" id="auth-password-confirm" name="password_confirm" placeholder="Répéter" autocomplete="new-password">
+                        <small class="field-error"></small>
+                    </div>
+                </div>
+                <div class="auth-actions">
+                    <button type="submit" class="auth-btn auth-btn-primary">S'inscrire</button>
+                    <a href="#" class="auth-btn auth-btn-secondary">Annuler</a>
+                </div>
+                <label for="auth-tab-login" class="auth-switch">Déjà un compte ? Se connecter</label>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Fenêtre "Accepter le trajet" -->
+<div id="accept-modal" class="auth-modal accept-modal">
+    <a href="#" class="auth-backdrop js-fermer-accept" aria-label="Fermer la fenêtre"></a>
+    <div class="auth-dialog" role="dialog" aria-labelledby="accept-titre">
+        <a href="#" class="auth-close js-fermer-accept" aria-label="Fermer">&times;</a>
+        <h2 id="accept-titre" class="auth-title">Confirmer le trajet</h2>
+        <p class="auth-subtitle">Vérifiez les informations avant d'accepter la proposition.</p>
+        <div class="recap">
+            <div class="avatar" id="acc-initiales" aria-hidden="true"></div>
+            <div>
+                <p class="recap-conducteur" id="acc-conducteur"></p>
+                <p class="recap-vehicule" id="acc-vehicule"></p>
+            </div>
+        </div>
+        <ul class="recap-liste">
+            <li><i class="fas fa-route" aria-hidden="true"></i> <span id="acc-trajet"></span></li>
+            <li><i class="far fa-calendar-alt" aria-hidden="true"></i> <span id="acc-date"></span></li>
+            <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span id="acc-rdv"></span></li>
+        </ul>
+        <form id="form-accepter" novalidate>
+            <div class="auth-row">
+                <div class="auth-field">
+                    <label for="acc-places">Nombre de places</label>
+                    <select id="acc-places"></select>
+                    <small class="field-error"></small>
+                </div>
+                <div class="auth-field">
+                    <label>Total à payer</label>
+                    <p class="recap-total" id="acc-total">0,000 DT</p>
+                </div>
+            </div>
+            <p class="recap-info"><i class="fas fa-info-circle" aria-hidden="true"></i> Le paiement se fait directement au conducteur le jour du départ.</p>
+            <div class="auth-actions">
+                <button type="submit" class="auth-btn auth-btn-primary" id="acc-valider"></button>
+                <a href="#" class="auth-btn auth-btn-secondary js-fermer-accept">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Icône à droite : ouvre l'interface utilisateur -->
+<a href="#espace" class="auth-fab" id="fab-user" aria-label="Mon espace" title="Connexion / Mon espace">
+    <i class="fas fa-user" aria-hidden="true"></i>
+</a>
+
+<script src="app/Views/assets/js/jquery.min.js"></script>
+<script src="app/Views/assets/js/jquery.dropotron.min.js"></script>
+<script src="app/Views/assets/js/jquery.scrolly.min.js"></script>
+<script src="app/Views/assets/js/browser.min.js"></script>
+<script src="app/Views/assets/js/breakpoints.min.js"></script>
+<script src="app/Views/assets/js/util.js"></script>
+<script src="app/Views/assets/js/main.js"></script>
+<script src="app/Views/assets/js/auth.js"></script>
+<script src="app/Views/assets/js/static-app.js"></script>
+</body>
+</html>

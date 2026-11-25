@@ -1,189 +1,133 @@
-<!-- Banner -->
-<section id="banner">
-    <div class="content">
-        <h2>Welcome to Smart City</h2>
-        <p>A free responsive site template built on HTML5, CSS3, and some other stuff</p>
-        <a href="#main" class="button scrolly">Alright let's go</a>
-        <a href="<?= BACKOFFICE_URL ?>index.php?page=dashboard" class="button alt">Espace Admin</a>
-    </div>
-</section>
+<?php
+$vehicules = $state['vehicules'] ?? [];
+$locations = $state['locations'] ?? [];
+$filtreActuel = $state['filtre'] ?? 'moto';
+$vehiculesFiltres = array_values(array_filter($vehicules, function ($v) use ($filtreActuel) {
+    return $filtreActuel === 'tous' || ($v['type'] ?? '') === $filtreActuel;
+}));
+?>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<?php include __DIR__ . '/../includes/head.php'; ?>
+		<title>Location Moto, Trottinette &amp; Vélo - URBIX</title>
+		<style>
+			.choix-type-bar { display: flex; flex-wrap: wrap; gap: 0.6em; margin-bottom: 1.5em; align-items: center; }
+			.badge-statut { display: inline-block; padding: 0.25em 0.7em; border-radius: 4px; font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+			.statut-disponible { background: #e6f7ed; color: #1e7e46; }
+			.statut-reserve { background: #fff4e5; color: #b25e09; }
+			.statut-encours { background: #e6f0ff; color: #1d5bbf; }
+			.statut-maintenance { background: #fdecec; color: #b42318; }
+			.statut-termine { background: #f0f1f3; color: #475467; }
+			.vehicule-meta { list-style: none; padding: 0; margin: 0.5em 0 1em 0; font-size: 0.9em; }
+			.vehicule-meta li { margin-bottom: 0.35em; }
+			.carte-location-box { border: 1px solid #dfe3e6; border-radius: 6px; padding: 1.2em; margin-bottom: 1.5em; background: #ffffff; }
+			.historique-item { border-bottom: 1px solid #e5e5e5; padding: 0.9em 0; }
+			.historique-item:last-child { border-bottom: none; }
+			.actions-ligne { display: flex; flex-wrap: wrap; gap: 0.45em; margin-top: 0.6em; }
+			.actions-ligne .button.small { padding: 0.35em 0.75em; font-size: 0.75em; height: auto; line-height: 1.4; }
+		</style>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
 
-<!-- Main -->
-<section id="main">
-    <div class="container">
-        <div class="row gtr-200">
-            <div class="col-12">
+			<header id="header">
+				<div class="logo container">
+					<div>
+						<h1><a href="index.php?page=mobilite" id="logo">URBIX</a></h1>
+						<p>Mobilité urbaine — Moto, Trottinette &amp; Vélo</p>
+					</div>
+				</div>
+			</header>
 
-                <!-- Highlight -->
-                <section class="box highlight">
-                    <ul class="special">
-                        <li><a href="#" class="icon solid fa-search"><span class="label">Magnifier</span></a></li>
-                        <li><a href="#" class="icon solid fa-tablet-alt"><span class="label">Tablet</span></a></li>
-                        <li><a href="#" class="icon solid fa-flask"><span class="label">Flask</span></a></li>
-                        <li><a href="#" class="icon solid fa-cog"><span class="label">Cog?</span></a></li>
-                    </ul>
-                    <header>
-                        <h2>A random assortment of icons in circles</h2>
-                        <p>And some text that attempts to explain their significance</p>
-                    </header>
-                    <p>
-                        Phasellus quam turpis, feugiat sit amet ornare in, hendrerit in lectus. Praesent semper mod quis eget mi. Etiam eu<br />
-                        ante risus. Aliquam erat volutpat. Aliquam luctus et mattis lectus amet pulvinar. Nam nec turpis consequat.
-                    </p>
-                </section>
+			<?php include __DIR__ . '/../includes/navbar.php'; ?>
 
-            </div>
-            <div class="col-12">
+			<section id="main">
+				<div class="container">
+					<div class="row gtr-200">
 
-                <!-- Features -->
-                <section class="box features">
-                    <h2 class="major"><span>A Major Heading</span></h2>
-                    <div>
-                        <div class="row">
-                            <div class="col-3 col-6-medium col-12-small">
-                                <section class="box feature">
-                                    <a href="#" class="image featured"><img src="<?= ASSETS_URL ?>images/pic01.jpg" alt="" /></a>
-                                    <h3><a href="#">A Subheading</a></h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a hendrerit in
-                                        lectus dolore. Praesent semper mod quis eget sed etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div class="col-3 col-6-medium col-12-small">
-                                <section class="box feature">
-                                    <a href="#" class="image featured"><img src="<?= ASSETS_URL ?>images/pic02.jpg" alt="" /></a>
-                                    <h3><a href="#">Another Subheading</a></h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a hendrerit in
-                                        lectus dolore. Praesent semper mod quis eget sed etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div class="col-3 col-6-medium col-12-small">
-                                <section class="box feature">
-                                    <a href="#" class="image featured"><img src="<?= ASSETS_URL ?>images/pic03.jpg" alt="" /></a>
-                                    <h3><a href="#">And Another</a></h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a hendrerit in
-                                        lectus dolore. Praesent semper mod quis eget sed etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div class="col-3 col-6-medium col-12-small">
-                                <section class="box feature">
-                                    <a href="#" class="image featured"><img src="<?= ASSETS_URL ?>images/pic04.jpg" alt="" /></a>
-                                    <h3><a href="#">And One More</a></h3>
-                                    <p>
-                                        Phasellus quam turpis, feugiat sit amet ornare in, a hendrerit in
-                                        lectus dolore. Praesent semper mod quis eget sed etiam eu ante risus.
-                                    </p>
-                                </section>
-                            </div>
-                            <div class="col-12">
-                                <ul class="actions">
-                                    <li><a href="#" class="button large">Do Something</a></li>
-                                    <li><a href="#" class="button alt large">Think About It</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Choisir un type et une location</span></h2>
 
-            </div>
-            <div class="col-12">
+								<div class="choix-type-bar">
+									<a href="index.php?page=mobilite&type=moto" class="button small <?= $filtreActuel === 'moto' ? '' : 'alt' ?>">Moto</a>
+									<a href="index.php?page=mobilite&type=trottinette" class="button small <?= $filtreActuel === 'trottinette' ? '' : 'alt' ?>">Trottinette</a>
+									<a href="index.php?page=mobilite&type=velo" class="button small <?= $filtreActuel === 'velo' ? '' : 'alt' ?>">Vélo</a>
+									<a href="index.php?page=mobilite&type=tous" class="button small <?= $filtreActuel === 'tous' ? '' : 'alt' ?>">Tous</a>
+								</div>
 
-                <!-- Blog -->
-                <section class="box blog">
-                    <h2 class="major"><span>Another Major Heading</span></h2>
-                    <div>
-                        <div class="row">
-                            <div class="col-9 col-12-medium">
-                                <div class="content">
+								<?php foreach ($vehiculesFiltres as $v): ?>
+									<?php $statut = htmlspecialchars($v['statut'] ?? 'disponible'); ?>
+									<div class="carte-location-box">
+										<div class="row gtr-50">
+											<div class="col-4 col-12-small">
+												<span class="image fit" style="margin:0;">
+													<img src="app/Views/images/<?= htmlspecialchars($v['image'] ?? 'urbix-moto.png') ?>" alt="<?= htmlspecialchars($v['nom'] ?? '') ?>" />
+												</span>
+											</div>
+											<div class="col-8 col-12-small">
+												<h3 style="margin-bottom:0.25em;"><?= htmlspecialchars($v['nom'] ?? '') ?></h3>
+												<p style="margin-bottom:0.4em;">
+													<span class="badge-statut statut-<?= $statut ?>"><?= $statut ?></span>
+													— <strong><?= htmlspecialchars((string)($v['tarifHeure'] ?? 0)) ?> DT / heure</strong>
+												</p>
+												<ul class="vehicule-meta">
+													<li><strong>Type :</strong> <?= strtoupper(htmlspecialchars($v['type'] ?? '')) ?></li>
+													<li><strong>Station :</strong> <?= htmlspecialchars($v['station'] ?? '') ?></li>
+													<li><strong>Batterie :</strong> <?= htmlspecialchars($v['autonomie'] ?? '100%') ?> — <strong>Note :</strong> <?= number_format((float)($v['noteMoyenne'] ?? 5), 1) ?>/5 (<?= (int)($v['avisCount'] ?? 0) ?> avis)</li>
+												</ul>
+												<?php if (($v['statut'] ?? '') === 'disponible'): ?>
+													<a href="index.php?page=mobilite-reserver&vehicule=<?= urlencode($v['id'] ?? '') ?>" class="button small">Choisir et réserver</a>
+												<?php else: ?>
+													<button type="button" class="button alt small" disabled>Indisponible</button>
+												<?php endif; ?>
+											</div>
+										</div>
+									</div>
+								<?php endforeach; ?>
+							</section>
+						</div>
 
-                                    <!-- Featured Post -->
-                                    <article class="box post">
-                                        <header>
-                                            <h3><a href="#">Here's a really big heading</a></h3>
-                                            <p>With a smaller subtitle that attempts to elaborate</p>
-                                            <ul class="meta">
-                                                <li class="icon fa-clock">15 minutes ago</li>
-                                                <li class="icon fa-comments"><a href="#">8</a></li>
-                                            </ul>
-                                        </header>
-                                        <a href="#" class="image featured"><img src="<?= ASSETS_URL ?>images/pic05.jpg" alt="" /></a>
-                                        <p>
-                                            Phasellus quam turpis, feugiat sit amet ornare in, a hendrerit in lectus. Praesent
-                                            semper mod quis eget mi. Etiam sed ante risus aliquam erat et volutpat. Praesent a
-                                            dapibus velit. Curabitur sed nisi nunc, accumsan vestibulum lectus. Lorem ipsum
-                                            dolor sit non aliquet sed, tempor et dolor. Praesent a dapibus velit. Curabitur
-                                            accumsan.
-                                        </p>
-                                        <a href="#" class="button">Continue Reading</a>
-                                    </article>
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Mes locations</span></h2>
+								<?php if (empty($locations)): ?>
+									<p>Aucune location enregistrée pour le moment.</p>
+								<?php else: ?>
+									<?php foreach ($locations as $l): ?>
+										<div class="historique-item">
+											<div>
+												<strong><?= htmlspecialchars($l['id'] ?? '') ?></strong> — <strong><?= htmlspecialchars($l['vehiculeNom'] ?? '') ?></strong>
+												<span class="badge-statut statut-<?= htmlspecialchars($l['statut'] ?? 'termine') ?>"><?= htmlspecialchars($l['statut'] ?? '') ?></span>
+											</div>
+											<p style="margin:0.4em 0;">
+												<?= htmlspecialchars($l['stationDepart'] ?? '') ?> → <?= htmlspecialchars($l['stationRetour'] ?? '') ?> |
+												Durée : <strong><?= htmlspecialchars((string)($l['dureeHeures'] ?? 1)) ?>h</strong> |
+												Total : <strong><?= number_format((float)($l['montant'] ?? 0), 2) ?> DT</strong> |
+												PIN : <strong><?= htmlspecialchars($l['codePin'] ?? '') ?></strong>
+											</p>
+											<div class="actions-ligne">
+												<a href="index.php?page=mobilite-demarrer&loc=<?= urlencode($l['id'] ?? '') ?>" class="button small">Déverrouiller</a>
+												<a href="index.php?page=mobilite-prolonger&loc=<?= urlencode($l['id'] ?? '') ?>" class="button small">Prolonger</a>
+												<a href="index.php?page=mobilite-incident&loc=<?= urlencode($l['id'] ?? '') ?>" class="button alt small">Incident</a>
+												<a href="index.php?page=mobilite-terminer&loc=<?= urlencode($l['id'] ?? '') ?>" class="button small">Terminer</a>
+												<a href="index.php?page=mobilite-annuler&loc=<?= urlencode($l['id'] ?? '') ?>" class="button alt small">Annuler</a>
+											</div>
+										</div>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</section>
+						</div>
 
-                                </div>
-                            </div>
-                            <div class="col-3 col-12-medium">
-                                <div class="sidebar">
+					</div>
+				</div>
+			</section>
 
-                                    <!-- Archives -->
-                                    <ul class="divided">
-                                        <li>
-                                            <article class="box post-summary">
-                                                <h3><a href="#">A Subheading</a></h3>
-                                                <ul class="meta">
-                                                    <li class="icon fa-clock">6 hours ago</li>
-                                                    <li class="icon fa-comments"><a href="#">34</a></li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article class="box post-summary">
-                                                <h3><a href="#">Another Subheading</a></h3>
-                                                <ul class="meta">
-                                                    <li class="icon fa-clock">9 hours ago</li>
-                                                    <li class="icon fa-comments"><a href="#">27</a></li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article class="box post-summary">
-                                                <h3><a href="#">And Another</a></h3>
-                                                <ul class="meta">
-                                                    <li class="icon fa-clock">Yesterday</li>
-                                                    <li class="icon fa-comments"><a href="#">184</a></li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article class="box post-summary">
-                                                <h3><a href="#">And Another</a></h3>
-                                                <ul class="meta">
-                                                    <li class="icon fa-clock">2 days ago</li>
-                                                    <li class="icon fa-comments"><a href="#">286</a></li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                        <li>
-                                            <article class="box post-summary">
-                                                <h3><a href="#">And One More</a></h3>
-                                                <ul class="meta">
-                                                    <li class="icon fa-clock">3 days ago</li>
-                                                    <li class="icon fa-comments"><a href="#">8,086</a></li>
-                                                </ul>
-                                            </article>
-                                        </li>
-                                    </ul>
-                                    <a href="#" class="button alt">Archives</a>
+			<?php include __DIR__ . '/../includes/footer.php'; ?>
+		</div>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-        </div>
-    </div>
-</section>
+		<?php include __DIR__ . '/../includes/auth-modal.php'; ?>
+		<?php include __DIR__ . '/../includes/scripts.php'; ?>
+	</body>
+</html>

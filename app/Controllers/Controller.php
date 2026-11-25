@@ -20,6 +20,8 @@ abstract class Controller {
         $isLoggedIn   = AuthController::isAuthenticated();
         $currentRole  = $_SESSION['role'] ?? null;
         $currentTypeService = $_SESSION['type_service'] ?? null;
+        // Super admin = admin qui gère tout ; adminBus (admin_scope 'bus') ne voit que la gestion des bus
+        $isSuperAdmin = $currentRole === 'admin' && ($_SESSION['admin_scope'] ?? 'tout') === 'tout';
         $csrfToken    = AuthController::getCsrfToken();
         $genres       = AuthController::GENRES;
         $typesService = AuthController::TYPES_SERVICE;

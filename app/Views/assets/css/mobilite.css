@@ -1,0 +1,14 @@
+.choix-type-bar { display: flex; flex-wrap: wrap; gap: 0.6em; margin-bottom: 1.5em; align-items: center; }
+.badge-statut { display: inline-block; padding: 0.25em 0.7em; border-radius: 4px; font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.statut-disponible { background: #e6f7ed; color: #1e7e46; }
+.statut-reserve { background: #fff4e5; color: #b25e09; }
+.statut-encours { background: #e6f0ff; color: #1d5bbf; }
+.statut-maintenance { background: #fdecec; color: #b42318; }
+.statut-termine { background: #f0f1f3; color: #475467; }
+.vehicule-meta { list-style: none; padding: 0; margin: 0.5em 0 1em 0; font-size: 0.9em; }
+.vehicule-meta li { margin-bottom: 0.35em; }
+.carte-location-box { border: 1px solid #dfe3e6; border-radius: 6px; padding: 1.2em; margin-bottom: 1.5em; background: #ffffff; }
+.historique-item { border-bottom: 1px solid #e5e5e5; padding: 0.9em 0; }
+.historique-item:last-child { border-bottom: none; }
+.actions-ligne { display: flex; flex-wrap: wrap; gap: 0.45em; margin-top: 0.6em; }
+.actions-ligne .button.small { padding: 0.35em 0.75em; font-size: 0.75em; height: auto; line-height: 1.4; }

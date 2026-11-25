@@ -179,6 +179,7 @@ class AuthController extends Controller
         $_SESSION['nom']           = $user->getNom();
         $_SESSION['prenom']        = $user->getPrenom();
         $_SESSION['role']          = $user->getRole();
+        $_SESSION['admin_scope']   = $user->getAdminScope();
         $_SESSION['type_service']  = $user->getTypeService();
         $_SESSION['last_activity'] = time();
 
@@ -438,6 +439,7 @@ class AuthController extends Controller
             self::redirect('home');
         }
         $_SESSION['role'] = $user->getRole(); // rôle toujours synchronisé avec la base
+        $_SESSION['admin_scope'] = $user->getAdminScope();
 
         // Message "flash" après une modification (succès ou erreurs)
         $flash = $_SESSION['profile_flash'] ?? [];
@@ -494,6 +496,8 @@ class AuthController extends Controller
             http_response_code(403);
             exit("Accès refusé : vous n'avez pas les permissions nécessaires.");
         }
+
+        $_SESSION['admin_scope'] = $user->getAdminScope();
 
         $this->page  = 'admin';
         $this->title = 'Backoffice | Smart City';

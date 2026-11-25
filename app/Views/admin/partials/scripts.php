@@ -5,4 +5,5 @@
 <!-- Même contrôle de saisie JS que le frontoffice + confirmation des suppressions -->
 <script src="<?= ASSETS_URL ?>assets/js/auth-validation.js"></script>
 <script src="<?= ADMIN_ASSETS_URL ?>js/trajet-validation.js"></script>
+<script src="<?= ASSETS_URL ?>assets/js/modules-validation.js"></script>
 <script src="<?= ADMIN_ASSETS_URL ?>js/admin.js"></script>

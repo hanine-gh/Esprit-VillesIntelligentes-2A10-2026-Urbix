@@ -13,3 +13,8 @@
 <script src="<?= ADMIN_ASSETS_URL ?>js/trajet-validation.js"></script>
 <!-- Confirmation avant les actions sensibles (ex : annuler une demande de STOP) -->
 <script src="<?= ADMIN_ASSETS_URL ?>js/admin.js"></script>
+<!-- Modules intégrés (location, train, louage, covoiturage) : contrôle de saisie JS + scripts propres à la page -->
+<script src="<?= ASSETS_URL ?>assets/js/modules-validation.js"></script>
+<?php foreach (($extraJs ?? []) as $script): ?>
+<script src="<?= ASSETS_URL . e($script) ?>?v=1"></script>
+<?php endforeach; ?>

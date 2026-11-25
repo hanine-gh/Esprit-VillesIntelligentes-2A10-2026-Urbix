@@ -1,8 +1,6 @@
 <?php
 use App\Controllers\HomeController;
 use App\Controllers\LeftSidebarController;
-use App\Controllers\RightSidebarController;
-use App\Controllers\NoSidebarController;
 use App\Controllers\AuthController;
 use App\Controllers\DriverController;
 use App\Controllers\TrajetController;
@@ -10,12 +8,21 @@ use App\Controllers\StationController;
 use App\Controllers\ChauffeurController;
 use App\Controllers\BusController;
 use App\Controllers\VoyageurController;
+use App\Controllers\MobiliteController;
+use App\Controllers\MobiliteAdminController;
+use App\Controllers\TrainVoyageurController;
+use App\Controllers\TrainAdminController;
+use App\Controllers\TrainController;
+use App\Controllers\TrainLigneController;
+use App\Controllers\TrainHoraireController;
+use App\Controllers\TrainAlerteController;
+use App\Controllers\LouageController;
+use App\Controllers\LouageAdminController;
+use App\Controllers\CovoiturageController;
 
 return [
     'home'          => [HomeController::class, 'index'],
     'left-sidebar'  => [LeftSidebarController::class, 'index'],
-    'right-sidebar' => [RightSidebarController::class, 'index'],
-    'no-sidebar'    => [NoSidebarController::class, 'index'],
 
     // Authentification
     'register'      => [AuthController::class, 'registerAction'],
@@ -66,4 +73,77 @@ return [
     'admin-station-create' => [StationController::class, 'createAction'],
     'admin-station-edit'   => [StationController::class, 'editAction'],
     'admin-station-delete' => [StationController::class, 'deleteAction'],
+
+    // =====================================================================
+    // MODULES INTÉGRÉS (frontoffice : utilisateur connecté / backoffice : admin)
+    // =====================================================================
+
+    // Location (moto, trottinette, vélo)
+    'location'           => [MobiliteController::class, 'indexAction'],
+    'location-reserver'  => [MobiliteController::class, 'reserverAction'],
+    'location-demarrer'  => [MobiliteController::class, 'demarrerAction'],
+    'location-prolonger' => [MobiliteController::class, 'prolongerAction'],
+    'location-incident'  => [MobiliteController::class, 'incidentAction'],
+    'location-terminer'  => [MobiliteController::class, 'terminerAction'],
+    'location-annuler'   => [MobiliteController::class, 'annulerAction'],
+
+    'admin-location'                    => [MobiliteAdminController::class, 'indexAction'],
+    'admin-location-vehicule-ajouter'   => [MobiliteAdminController::class, 'ajouterVehiculeAction'],
+    'admin-location-vehicule-tarif'     => [MobiliteAdminController::class, 'tarifAction'],
+    'admin-location-vehicule-statut'    => [MobiliteAdminController::class, 'statutAction'],
+    'admin-location-vehicule-supprimer' => [MobiliteAdminController::class, 'supprimerVehiculeAction'],
+    'admin-location-cloturer'           => [MobiliteAdminController::class, 'cloturerAction'],
+    'admin-location-supprimer'          => [MobiliteAdminController::class, 'supprimerLocationAction'],
+    'admin-location-purger'             => [MobiliteAdminController::class, 'purgerAction'],
+
+    // Train
+    'train-disponibles' => [TrainVoyageurController::class, 'disponiblesAction'],
+    'train-suivi'       => [TrainVoyageurController::class, 'suiviAction'],
+    'train-horaires'    => [TrainVoyageurController::class, 'horairesAction'],
+    'train-alertes'     => [TrainVoyageurController::class, 'alertesAction'],
+
+    'admin-train'               => [TrainAdminController::class, 'indexAction'],
+    'admin-train-trains'        => [TrainController::class, 'indexAction'],
+    'admin-train-train-delete'  => [TrainController::class, 'deleteAction'],
+    'admin-train-lignes'        => [TrainLigneController::class, 'indexAction'],
+    'admin-train-ligne-delete'  => [TrainLigneController::class, 'deleteAction'],
+    'admin-train-horaires'      => [TrainHoraireController::class, 'indexAction'],
+    'admin-train-horaire-delete'=> [TrainHoraireController::class, 'deleteAction'],
+    'admin-train-alertes'       => [TrainAlerteController::class, 'indexAction'],
+    'admin-train-alerte-delete' => [TrainAlerteController::class, 'deleteAction'],
+
+    // Louage
+    'louage-recherche'           => [LouageController::class, 'rechercheAction'],
+    'louage-resultats'           => [LouageController::class, 'resultatsAction'],
+    'louage-details'             => [LouageController::class, 'detailsAction'],
+    'louage-reservation'         => [LouageController::class, 'reservationAction'],
+    'louage-stations'            => [LouageController::class, 'stationsAction'],
+    'louage-suivi'               => [LouageController::class, 'suiviAction'],
+    'louage-mes-reservations'    => [LouageController::class, 'mesReservationsAction'],
+    'louage-reservation-annuler' => [LouageController::class, 'annulerAction'],
+
+    'admin-louage'                     => [LouageAdminController::class, 'dashboardAction'],
+    'admin-louage-vehicules'           => [LouageAdminController::class, 'vehiculesAction'],
+    'admin-louage-vehicule-delete'     => [LouageAdminController::class, 'vehiculeDeleteAction'],
+    'admin-louage-chauffeurs'          => [LouageAdminController::class, 'chauffeursAction'],
+    'admin-louage-chauffeur-delete'    => [LouageAdminController::class, 'chauffeurDeleteAction'],
+    'admin-louage-stations'            => [LouageAdminController::class, 'stationsAction'],
+    'admin-louage-station-delete'      => [LouageAdminController::class, 'stationDeleteAction'],
+    'admin-louage-trajets'             => [LouageAdminController::class, 'routesAction'],
+    'admin-louage-trajet-delete'       => [LouageAdminController::class, 'routeDeleteAction'],
+    'admin-louage-horaires'            => [LouageAdminController::class, 'horairesAction'],
+    'admin-louage-horaire-delete'      => [LouageAdminController::class, 'horaireDeleteAction'],
+    'admin-louage-reservations'        => [LouageAdminController::class, 'reservationsAction'],
+    'admin-louage-reservation-statut'  => [LouageAdminController::class, 'reservationStatutAction'],
+    'admin-louage-prix'                => [LouageAdminController::class, 'prixAction'],
+    'admin-louage-prix-delete'         => [LouageAdminController::class, 'prixDeleteAction'],
+    'admin-louage-reclamations'        => [LouageAdminController::class, 'reclamationsAction'],
+    'admin-louage-reclamation-resoudre'=> [LouageAdminController::class, 'reclamationResoudreAction'],
+    'admin-louage-notification'        => [LouageAdminController::class, 'notificationAction'],
+
+    // Covoiturage
+    'covoiturage'              => [CovoiturageController::class, 'indexAction'],
+    'covoiturage-accepter'     => [CovoiturageController::class, 'accepterAction'],
+    'covoiturage-annuler'      => [CovoiturageController::class, 'annulerAction'],
+    'covoiturage-reservations' => [CovoiturageController::class, 'reservationsAction'],
 ];

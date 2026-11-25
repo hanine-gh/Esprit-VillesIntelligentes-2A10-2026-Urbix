@@ -19,6 +19,7 @@ class UserModel extends Model
     private ?string $telephone = null;
     private ?string $typeService = null;
     private string $role = 'user';           // 'user' (frontoffice) ou 'admin' (backoffice)
+    private string $adminScope = 'tout';     // admin : 'tout' (toutes les gestions) ou 'bus' (gestion des bus seulement)
     private ?string $createdAt = null;
 
     /**
@@ -37,6 +38,7 @@ class UserModel extends Model
         $user->setTelephone($row['telephone'] ?? null);
         $user->setTypeService($row['type_service'] ?? null);
         $user->setRole((string) ($row['role'] ?? 'user'));
+        $user->setAdminScope((string) ($row['admin_scope'] ?? 'tout'));
         $user->setCreatedAt($row['created_at'] ?? null);
         return $user;
     }
@@ -52,6 +54,7 @@ class UserModel extends Model
     public function getTelephone(): ?string { return $this->telephone; }
     public function getTypeService(): ?string { return $this->typeService; }
     public function getRole(): string { return $this->role; }
+    public function getAdminScope(): string { return $this->adminScope; }
     public function getCreatedAt(): ?string { return $this->createdAt; }
 
     // ===== Setters =====
@@ -65,5 +68,6 @@ class UserModel extends Model
     public function setTelephone(?string $telephone): void { $this->telephone = $telephone; }
     public function setTypeService(?string $typeService): void { $this->typeService = $typeService; }
     public function setRole(string $role): void { $this->role = $role; }
+    public function setAdminScope(string $scope): void { $this->adminScope = $scope === 'bus' ? 'bus' : 'tout'; }
     public function setCreatedAt(?string $createdAt): void { $this->createdAt = $createdAt; }
 }

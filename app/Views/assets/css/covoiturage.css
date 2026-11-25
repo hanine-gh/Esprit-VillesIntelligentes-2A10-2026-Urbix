@@ -1,0 +1,1110 @@
+/*
+ * Urbix – Module Covoiturage + Interface utilisateur
+ * Reprend la charte du template TXT (bleus #5a73d6 / #3b53a8 / #465487, Open Sans Condensed).
+ */
+
+/* L'attribut hidden doit toujours masquer, même sur un élément en display:flex/grid */
+[hidden] {
+    display: none !important;
+}
+
+/* ------------------------------------------------------------------
+   Navigation : icônes des sous-menus (comme la maquette) + utilisateur connecté
+   ------------------------------------------------------------------ */
+.dropotron li > a i {
+    width: 1.4em;
+    margin-right: 0.35em;
+    text-align: center;
+    font-style: normal;
+}
+#nav li.auth-nav-item > a.auth-trigger.is-connected {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    background: #3b53a8;
+    box-shadow: 0 0 0 3px #dfe5f7;
+}
+.auth-fab.is-connected {
+    display: block;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+/* Champs de la popup quand elle est dans un <form> (neutralise "form input" du template) */
+.auth-modal .auth-field input,
+.auth-modal .auth-field select {
+    line-height: 1.6em;
+    height: auto;
+}
+.auth-modal .auth-field select {
+    -webkit-appearance: menulist;
+    appearance: auto;
+}
+.auth-modal .auth-field label {
+    text-transform: none;
+    margin: 0 0 0.35em 0;
+}
+.auth-modal .auth-error {
+    background: #fdecee;
+    color: #b3263a;
+    border-left: solid 4px #d9465b;
+    border-radius: 6px;
+    padding: 0.6em 0.9em;
+    margin: 0 0 1.25em 0;
+    font-size: 0.95em;
+    line-height: 1.5em;
+}
+.field-error {
+    display: block;
+    min-height: 0;
+    color: #d9465b;
+    font-size: 0.8em;
+    line-height: 1.4em;
+}
+.auth-modal .is-invalid {
+    border-color: #d9465b !important;
+}
+
+/* ------------------------------------------------------------------
+   Messages flash
+   ------------------------------------------------------------------ */
+.flash-toast {
+    position: fixed;
+    top: 4.25em;
+    left: 50%;
+    z-index: 10001;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    max-width: 92%;
+    width: 640px;
+    padding: 0.9em 1.25em;
+    border-radius: 8px;
+    background: #fff;
+    color: #5b678f;
+    line-height: 1.5em;
+    box-shadow: 0 1em 3em rgba(23, 32, 66, 0.25);
+    border-left: solid 6px #5a73d6;
+    transition: opacity .4s ease, transform .4s ease;
+}
+.flash-toast.is-hidden {
+    opacity: 0;
+    transform: translate(-50%, -1em);
+}
+.flash-toast > i {
+    font-size: 1.4em;
+    color: #5a73d6;
+}
+.flash-toast span {
+    flex: 1;
+}
+.flash-toast.flash-succes { border-left-color: #2fa36b; }
+.flash-toast.flash-succes > i { color: #2fa36b; }
+.flash-toast.flash-erreur { border-left-color: #d9465b; }
+.flash-toast.flash-erreur > i { color: #d9465b; }
+.flash-toast .flash-close {
+    background: transparent;
+    color: #7c88b3;
+    padding: 0 0.25em;
+    font-size: 1.5em;
+    line-height: 1;
+}
+.flash-toast .flash-close:hover {
+    background: transparent;
+    color: #3b53a8;
+}
+
+/* ------------------------------------------------------------------
+   Notices
+   ------------------------------------------------------------------ */
+.notice {
+    border-radius: 8px;
+    padding: 0.85em 1.25em;
+    margin: 0 0 2em 0;
+    line-height: 1.6em;
+    background: #eef1fc;
+    border-left: solid 5px #5a73d6;
+}
+.notice i {
+    margin-right: 0.4em;
+    color: #5a73d6;
+}
+.notice-erreur {
+    background: #fdecee;
+    border-left-color: #d9465b;
+    color: #b3263a;
+}
+.notice-erreur i {
+    color: #d9465b;
+}
+.notice code,
+.espace-utilisateur code {
+    background: #dfe5f7;
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+    font-size: 0.9em;
+}
+
+/* Icônes rondes sans lien dans ul.special */
+ul.special li span.icon {
+    display: block;
+}
+ul.special li span.icon:before {
+    display: block;
+    text-align: center;
+    background: #3b53a8;
+    border-radius: 100%;
+    width: 2.25em;
+    height: 2.25em;
+    line-height: 2.175em;
+    font-size: 5em;
+    color: #fff;
+    transition: background-color .2s ease-in-out;
+}
+ul.special li:hover span.icon:before {
+    background: #5a73d6;
+}
+
+/* ------------------------------------------------------------------
+   Bannière + formulaire de recherche
+   ------------------------------------------------------------------ */
+#covoit-hero {
+    position: relative;
+    background-image: url("images/overlay.png"), linear-gradient(rgba(23, 32, 66, 0.82), rgba(23, 32, 66, 0.88)), url("../../images/banner.jpg");
+    background-position: top left, center, center center;
+    background-size: auto, cover, cover;
+    background-repeat: repeat, no-repeat, no-repeat;
+    padding: 5em 0 6em 0;
+}
+#covoit-hero .hero-titre {
+    text-align: center;
+    margin-bottom: 2.5em;
+}
+#covoit-hero .hero-titre h2 {
+    color: #fff;
+    font-size: 2.75em;
+    margin: 0 0 0.25em 0;
+}
+#covoit-hero .hero-titre h2 i {
+    font-style: normal;
+    color: #8ea1ec;
+}
+#covoit-hero .hero-titre p {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #cbd5f5;
+    font-size: 1.3em;
+    margin: 0;
+}
+
+.recherche-card {
+    background: #fff;
+    border-radius: 8px;
+    border-top: solid 5px #5a73d6;
+    box-shadow: 0 1.5em 4em rgba(0, 0, 0, 0.3);
+    padding: 2em 2em 2.25em 2em;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.recherche-card label {
+    margin: 0 0 0.35em 0;
+    font-size: 0.95em;
+}
+.recherche-card label i {
+    font-style: normal;
+    color: #5a73d6;
+    margin-right: 0.25em;
+}
+.recherche-card input[type="text"],
+.recherche-card input[type="date"],
+.recherche-card input[type="time"],
+.recherche-card select {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    height: 3em;
+    line-height: normal;
+    padding: 0 1em;
+    border-radius: 8px;
+    border: solid 2px #dfe5f7;
+    background: #fff;
+    color: #5b678f;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1em;
+    outline: 0;
+}
+.recherche-card select {
+    background-image: linear-gradient(45deg, transparent 50%, #5a73d6 50%), linear-gradient(135deg, #5a73d6 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+}
+.recherche-card input:focus,
+.recherche-card select:focus {
+    border-color: #5a73d6;
+}
+.recherche-card .has-error input,
+.recherche-card .has-error select {
+    border-color: #d9465b;
+}
+.recherche-villes {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    margin-bottom: 1em;
+}
+.recherche-villes .champ {
+    flex: 1;
+}
+.recherche-villes input[type="text"] {
+    height: 3.4em;
+    font-size: 1.1em;
+}
+.btn-inverser {
+    flex: 0 0 auto;
+    width: 3em;
+    height: 3em;
+    margin-top: 2.1em;
+    padding: 0;
+    border-radius: 100%;
+    background: #dfe5f7;
+    color: #3b53a8;
+    font-size: 1em;
+    line-height: 3em;
+    transition: transform .4s ease, background-color .2s ease;
+}
+.btn-inverser:hover {
+    background: #5a73d6;
+    color: #fff;
+}
+.btn-inverser.is-turning {
+    transform: rotate(180deg);
+}
+.recherche-options {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 1em;
+}
+.raccourcis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+    margin-top: 0.4em;
+}
+.raccourcis button,
+.tri button,
+.flash-toast .flash-close {
+    display: inline-block;
+    width: auto;
+}
+.raccourcis button {
+    font-size: 0.75em;
+    padding: 0.45em 0.8em;
+    background: #eef1fc;
+    color: #3b53a8;
+    border-radius: 20px;
+}
+.raccourcis button:hover {
+    background: #5a73d6;
+    color: #fff;
+}
+.btn-rechercher {
+    display: block;
+    width: 100%;
+    margin-top: 1.25em;
+}
+.btn-rechercher i {
+    font-style: normal;
+    margin-right: 0.35em;
+}
+
+/* ------------------------------------------------------------------
+   Résultats
+   ------------------------------------------------------------------ */
+.box.resultats {
+    margin-bottom: 4em;
+    scroll-margin-top: 5em;
+}
+.resultats-barre {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em;
+    margin-bottom: 1.5em;
+    padding-bottom: 1em;
+    border-bottom: solid 2px #dfe5f7;
+}
+.resultats-compte {
+    margin: 0;
+}
+.tri {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35em;
+}
+.tri span {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-right: 0.25em;
+}
+.tri button {
+    font-size: 0.85em;
+    padding: 0.55em 1em;
+    background: #eef1fc;
+    color: #3b53a8;
+}
+.tri button i {
+    font-style: normal;
+}
+.tri button:hover,
+.tri button.is-active {
+    background: #3b53a8;
+    color: #fff;
+}
+.filtres {
+    display: flex;
+    gap: 1.25em;
+}
+.filtres label {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    margin: 0;
+    cursor: pointer;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.filtres input {
+    -webkit-appearance: checkbox;
+    appearance: auto;
+    width: 1.1em;
+    height: 1.1em;
+    margin: 0;
+    accent-color: #5a73d6;
+}
+/* Le template ajoute une marge basse aux <article>/<section> : on la neutralise dans les listes */
+.covoit-card,
+.reservation,
+.entite,
+.profil-card section {
+    margin: 0;
+}
+
+.liste-trajets {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+}
+.covoit-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr auto;
+    gap: 1.5em;
+    align-items: center;
+    background: #fff;
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    padding: 1.5em 1.75em;
+    line-height: 1.6em;
+    transition: transform .2s ease, box-shadow .2s ease, opacity .3s ease;
+}
+.covoit-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 1em 2em rgba(59, 83, 168, 0.12);
+    border-color: #cbd5f5;
+}
+.covoit-card.is-best {
+    border-color: #5a73d6;
+    box-shadow: 0 0 0 3px rgba(90, 115, 214, 0.15);
+    padding-top: 2.25em;
+}
+.covoit-card.is-leaving {
+    opacity: 0;
+    transform: translateX(2em);
+}
+.covoit-card[hidden] {
+    display: none;
+}
+.trajet-ribbon {
+    position: absolute;
+    top: -2px;
+    left: 1.5em;
+    background: #5a73d6;
+    color: #fff;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    padding: 0.2em 1em;
+    border-radius: 0 0 6px 6px;
+}
+.trajet-ribbon i {
+    font-style: normal;
+}
+
+.avatar {
+    flex: 0 0 auto;
+    width: 3.5em;
+    height: 3.5em;
+    line-height: 3.5em;
+    border-radius: 100%;
+    background: linear-gradient(135deg, #5a73d6, #3b53a8);
+    color: #fff;
+    text-align: center;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.15em;
+    letter-spacing: 0.05em;
+}
+.avatar-xl {
+    width: 5em;
+    height: 5em;
+    line-height: 5em;
+    font-size: 1.8em;
+}
+.trajet-conducteur {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+.conducteur-nom {
+    margin: 0;
+    font-size: 1.3em;
+}
+.etoiles {
+    color: #f2b632;
+    font-size: 0.85em;
+}
+.etoiles i {
+    font-style: normal;
+}
+.etoiles span {
+    color: #7c88b3;
+    margin-left: 0.35em;
+}
+.vehicule {
+    margin: 0;
+    font-size: 0.85em;
+    color: #7c88b3;
+}
+.vehicule i,
+.rdv i,
+.trajet-date i,
+.tags i,
+.places i {
+    font-style: normal;
+    color: #5a73d6;
+    margin-right: 0.25em;
+}
+
+.trajet-date {
+    margin: 0 0 0.5em 0;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #3b53a8;
+}
+.timeline {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    margin-bottom: 0.5em;
+}
+.timeline .etape {
+    display: flex;
+    flex-direction: column;
+    min-width: 4.5em;
+}
+.timeline .etape strong {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 1.35em;
+    color: #3b53a8;
+    line-height: 1.2em;
+}
+.timeline .etape span {
+    font-weight: 700;
+}
+.timeline .ligne {
+    position: relative;
+    flex: 1;
+    height: 3px;
+    min-width: 3em;
+    background: #dfe5f7;
+    border-radius: 3px;
+}
+.timeline .ligne:before,
+.timeline .ligne:after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    width: 11px;
+    height: 11px;
+    border-radius: 100%;
+    background: #fff;
+    border: solid 3px #5a73d6;
+}
+.timeline .ligne:before { left: -2px; }
+.timeline .ligne:after { right: -2px; background: #5a73d6; }
+.timeline .ligne em {
+    position: absolute;
+    top: -1.7em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-style: normal;
+    font-size: 0.75em;
+    color: #7c88b3;
+    white-space: nowrap;
+}
+.rdv {
+    margin: 0 0 0.4em 0;
+    font-size: 0.9em;
+}
+.tags,
+.badges {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+}
+.tags li {
+    font-size: 0.8em;
+    background: #f4f6fd;
+    border-radius: 20px;
+    padding: 0 0.8em;
+}
+.badges {
+    margin-top: 0.5em;
+}
+.badges li {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    background: #e6f6ee;
+    color: #23845a;
+    border-radius: 4px;
+    padding: 0 0.6em;
+}
+.trajet-description {
+    margin: 0.4em 0 0 0;
+    font-size: 0.85em;
+    font-style: italic;
+    color: #7c88b3;
+}
+
+.trajet-action {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5em;
+    min-width: 11em;
+    text-align: center;
+    border-left: solid 2px #dfe5f7;
+    padding-left: 1.5em;
+}
+.trajet-action .prix,
+.reservation-action .prix {
+    margin: 0;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.75em;
+    line-height: 1.1em;
+    color: #3b53a8;
+}
+.trajet-action .prix small,
+.reservation-action .prix small {
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    font-size: 0.45em;
+    color: #7c88b3;
+    text-transform: none;
+}
+.places {
+    margin: 0;
+    font-size: 0.85em;
+}
+.places.is-low {
+    color: #d9465b;
+    font-weight: 700;
+}
+.score {
+    position: relative;
+    margin: 0;
+    height: 1.35em;
+    background: #eef1fc;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.score span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #8ea1ec, #5a73d6);
+    border-radius: 20px;
+}
+.score em {
+    position: relative;
+    font-style: normal;
+    font-size: 0.7em;
+    line-height: 1.95em;
+    font-weight: 700;
+    color: #2f448c;
+}
+.trajet-action .button {
+    font-size: 1em;
+    padding: 0.7em 1em;
+}
+.trajet-action .button i {
+    font-style: normal;
+}
+.button.small {
+    font-size: 0.85em;
+    padding: 0.55em 1em;
+}
+
+.vide,
+.vide-filtre {
+    text-align: center;
+    padding: 2em 1em;
+}
+.vide > i {
+    font-size: 3.5em;
+    color: #cbd5f5;
+    font-style: normal;
+}
+.vide ul.actions {
+    margin-bottom: 0;
+}
+.vide .button i {
+    font-style: normal;
+}
+
+/* ------------------------------------------------------------------
+   Fenêtre "Accepter le trajet"
+   ------------------------------------------------------------------ */
+.accept-modal .auth-dialog {
+    max-width: 480px;
+}
+.recap {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    background: #f4f6fd;
+    border-radius: 8px;
+    padding: 1em;
+    margin-bottom: 1em;
+}
+.recap p {
+    margin: 0;
+    line-height: 1.4em;
+}
+.recap-conducteur {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.2em;
+    color: #3b53a8;
+}
+.recap-vehicule {
+    font-size: 0.85em;
+    color: #7c88b3;
+}
+.recap-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25em 0;
+    line-height: 1.8em;
+}
+.recap-liste i,
+.recap-info i,
+.auth-btn i {
+    font-style: normal;
+    color: #5a73d6;
+    width: 1.4em;
+}
+.auth-btn-primary i {
+    color: #fff;
+}
+.recap-total {
+    margin: 0;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.6em;
+    color: #3b53a8;
+    line-height: 2em;
+}
+.recap-info {
+    margin: 0;
+    font-size: 0.85em;
+    line-height: 1.5em;
+    color: #7c88b3;
+}
+
+/* ------------------------------------------------------------------
+   Interface utilisateur
+   ------------------------------------------------------------------ */
+.special-actions {
+    justify-content: center;
+    margin-bottom: 0;
+}
+.special-actions i {
+    font-style: normal;
+}
+.profil-card {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    background: linear-gradient(135deg, #3b53a8, #465487);
+    color: #dfe5f7;
+    border-radius: 8px;
+    padding: 2em 2.25em;
+    margin-bottom: 2em;
+    line-height: 1.6em;
+}
+.profil-card .avatar {
+    background: #fff;
+    color: #3b53a8;
+}
+.profil-infos {
+    flex: 1;
+}
+.profil-infos h2 {
+    color: #fff;
+    font-size: 2.2em;
+    margin: 0;
+}
+.profil-role {
+    margin: 0 0 0.5em 0;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #cbd5f5;
+}
+.profil-details {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25em 1.5em;
+    font-size: 0.9em;
+}
+.profil-card i {
+    font-style: normal;
+    margin-right: 0.3em;
+}
+.profil-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+}
+.profil-actions form {
+    margin: 0;
+}
+.profil-actions .button {
+    display: block;
+    width: 100%;
+    font-size: 1em;
+    background: #fff;
+    color: #3b53a8;
+}
+.profil-actions .button:hover {
+    background: #dfe5f7;
+}
+.profil-actions .button.alt {
+    background: transparent;
+    color: #fff;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+.profil-actions .button.alt:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5em;
+    margin-bottom: 3.5em;
+}
+.stat {
+    background: #f4f6fd;
+    border-radius: 8px;
+    padding: 1.25em;
+    text-align: center;
+    line-height: 1.4em;
+}
+.stat i {
+    display: block;
+    font-style: normal;
+    font-size: 1.6em;
+    color: #5a73d6;
+    margin-bottom: 0.4em;
+}
+.stat strong {
+    display: block;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 1.9em;
+    line-height: 1.2em;
+    color: #3b53a8;
+}
+.stat span {
+    font-size: 0.85em;
+}
+
+.liste-reservations {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.reservation {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5em;
+    align-items: center;
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    padding: 1.25em 1.5em;
+    line-height: 1.6em;
+}
+.reservation.is-annulee {
+    opacity: 0.6;
+}
+.reservation-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #3b53a8;
+    color: #fff;
+    border-radius: 8px;
+    min-width: 4.5em;
+    padding: 0.5em 0.75em;
+    line-height: 1.2em;
+}
+.reservation-date strong {
+    color: #fff;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-size: 1.8em;
+    line-height: 1.1em;
+}
+.reservation-date span {
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+.reservation-date em {
+    font-style: normal;
+    font-size: 0.8em;
+    color: #cbd5f5;
+}
+.reservation-infos h3 {
+    margin: 0 0 0.2em 0;
+}
+.reservation-infos h3 i,
+.reservation-infos p i {
+    font-style: normal;
+    color: #5a73d6;
+}
+.reservation-infos p {
+    margin: 0;
+    font-size: 0.9em;
+}
+.reservation-infos .rebours {
+    margin-top: 0.3em;
+    font-weight: 700;
+    color: #2fa36b;
+}
+.reservation-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4em;
+    text-align: right;
+}
+.reservation-action form {
+    margin: 0;
+}
+.reservation-action .button i {
+    font-style: normal;
+}
+.statut {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    padding: 0 0.75em;
+    border-radius: 20px;
+}
+.statut-ok { background: #e6f6ee; color: #23845a; }
+.statut-ko { background: #fdecee; color: #b3263a; }
+.statut-fin { background: #eef1fc; color: #3b53a8; }
+
+.services-grille {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1em;
+}
+.services-grille a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+    padding: 1.25em 0.5em;
+    border-radius: 8px;
+    background: #f4f6fd;
+    text-decoration: none;
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.3em;
+    text-align: center;
+    transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+.services-grille a i {
+    font-style: normal;
+    font-size: 2em;
+    color: #5a73d6;
+}
+.services-grille a:hover {
+    background: #3b53a8;
+    color: #fff;
+    transform: translateY(-3px);
+}
+.services-grille a:hover i {
+    color: #fff;
+}
+
+/* ------------------------------------------------------------------
+   Pages des autres modules (entités)
+   ------------------------------------------------------------------ */
+.module-notice {
+    text-align: left;
+    max-width: 760px;
+    margin: 0 auto;
+}
+.entites {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5em;
+    margin-bottom: 2em;
+}
+.entite {
+    border: solid 2px #dfe5f7;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.entite h3 {
+    background: #3b53a8;
+    color: #fff;
+    margin: 0;
+    padding: 0.6em 1em;
+}
+.entite h3 i {
+    font-style: normal;
+}
+.entite ul {
+    list-style: none;
+    padding: 0.5em 1em;
+    margin: 0;
+    line-height: 1.9em;
+    font-family: monospace;
+    font-size: 0.95em;
+}
+.entite li i {
+    font-style: normal;
+    font-size: 0.8em;
+    width: 1.4em;
+}
+.entite .cle-primaire {
+    font-weight: 700;
+    color: #b8860b;
+}
+.entite .cle-etrangere {
+    color: #3b53a8;
+}
+ul.actions.centre {
+    text-align: center;
+    margin-bottom: 0;
+}
+ul.actions.centre .button i {
+    font-style: normal;
+}
+
+/* ------------------------------------------------------------------
+   Responsive
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 980px) {
+    .recherche-options {
+        grid-template-columns: 1fr 1fr;
+    }
+    .covoit-card {
+        grid-template-columns: 1fr;
+    }
+    .trajet-action {
+        border-left: 0;
+        border-top: solid 2px #dfe5f7;
+        padding: 1em 0 0 0;
+    }
+    .profil-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .profil-details {
+        justify-content: center;
+    }
+}
+@media screen and (max-width: 736px) {
+    #covoit-hero {
+        padding: 2.5em 0 3em 0;
+    }
+    #covoit-hero .hero-titre h2 {
+        font-size: 1.9em;
+    }
+    .recherche-card {
+        padding: 1.25em;
+    }
+    .recherche-villes {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25em;
+    }
+    .btn-inverser {
+        align-self: center;
+        margin: 0;
+        transform: rotate(90deg);
+    }
+    .btn-inverser.is-turning {
+        transform: rotate(270deg);
+    }
+    .recherche-options,
+    .stats {
+        grid-template-columns: 1fr;
+    }
+    .reservation {
+        grid-template-columns: 1fr;
+    }
+    .reservation-date {
+        flex-direction: row;
+        gap: 0.5em;
+        justify-content: center;
+    }
+    .reservation-action {
+        align-items: stretch;
+        text-align: center;
+    }
+    .flash-toast {
+        top: 3.5em;
+    }
+}

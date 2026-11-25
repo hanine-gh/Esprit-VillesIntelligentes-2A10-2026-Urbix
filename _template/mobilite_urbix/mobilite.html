@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
 		<style>
-			.choix-type-bar { display: flex; flex-wrap: wrap; gap: 0.6em; margin-bottom: 1.5em; }
+			.choix-type-bar { display: flex; flex-wrap: wrap; gap: 0.6em; margin-bottom: 1.5em; align-items: center; }
 			.badge-statut { display: inline-block; padding: 0.25em 0.7em; border-radius: 4px; font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 			.statut-disponible { background: #e6f7ed; color: #1e7e46; }
 			.statut-reserve { background: #fff4e5; color: #b25e09; }
@@ -16,92 +16,111 @@
 			.vehicule-meta { list-style: none; padding: 0; margin: 0.5em 0 1em 0; font-size: 0.9em; }
 			.vehicule-meta li { margin-bottom: 0.35em; }
 			.carte-location-box { border: 1px solid #dfe3e6; border-radius: 6px; padding: 1.2em; margin-bottom: 1.5em; background: #ffffff; }
-			.carte-location-box.selectionnee { border-color: #b1ddab; box-shadow: 0 0 0 2px rgba(177, 221, 171, 0.35); }
-			.pile-liens-actions { display: flex; flex-direction: column; gap: 0.6em; }
-			.pile-liens-actions .button { width: 100%; text-align: center; }
+			.carte-location-box.selectionnee { border-color: #6c8cff; box-shadow: 0 0 0 2px rgba(108, 140, 255, 0.25); }
+			.barre-actions-haut { display: flex; flex-wrap: wrap; gap: 0.5em; padding: 0.9em 1.1em; background: #f8f9fb; border: 1px solid #dfe3e6; border-radius: 6px; margin-bottom: 1.5em; align-items: center; }
+			.barre-actions-haut .titre-barre { font-size: 0.78em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #555e68; margin-right: 0.4em; }
+			.barre-actions-haut .button.small { padding: 0.42em 0.85em; font-size: 0.76em; height: auto; line-height: 1.3; }
 			.historique-item { border-bottom: 1px solid #e5e5e5; padding: 0.9em 0; }
 			.historique-item:last-child { border-bottom: none; }
 			.actions-ligne { display: flex; flex-wrap: wrap; gap: 0.45em; margin-top: 0.6em; }
 			.actions-ligne .button.small { padding: 0.35em 0.75em; font-size: 0.75em; height: auto; line-height: 1.4; }
 			.alerte-feedback { padding: 0.8em 1.2em; border-radius: 4px; background: #eef6ee; border: 1px solid #b1ddab; color: #234e26; margin-bottom: 1.2em; display: none; }
+
+			/* Modale Utilisateur (User) */
+			.user-modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; z-index: 10000; padding: 1em; }
+			.user-modal-backdrop.open { display: flex; }
+			.user-modal-card { background: #ffffff; color: #2e383f; border-radius: 8px; max-width: 440px; width: 100%; padding: 1.5em; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25); position: relative; }
+			.user-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1em; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.6em; }
+			.user-modal-tabs { display: flex; gap: 0.5em; margin-bottom: 1em; }
+			.user-badge-pill { font-size: 0.82em; font-weight: 700; color: #1d5bbf; }
 		</style>
 	</head>
 	<body class="is-preload">
 		<div id="page-wrapper">
 
+			<!-- Header -->
 			<header id="header">
 				<div class="logo container">
 					<div>
-						<h1><a href="../index.html" id="logo">URBIX</a></h1>
+						<h1><a href="mobilite.html" id="logo">URBIX</a></h1>
 						<p>Mobilité urbaine — Moto, Trottinette &amp; Vélo</p>
 					</div>
 				</div>
 			</header>
 
+			<!-- Nav en haut + accès User -->
 			<nav id="nav">
 				<ul>
 					<li><a href="../index.html">Accueil</a></li>
-					<li class="current"><a href="mobilite.html">Location Véhicules</a></li>
-					<li><a href="backoffice_mobilite.html">Back-Office</a></li>
-					<li><a href="prolonger.html">Prolonger</a></li>
+					<li class="current">
+						<a href="mobilite.html">Location Véhicules</a>
+						<ul>
+							<li><a href="reserver.html" id="menuReserver">Réserver</a></li>
+							<li><a href="demarrer.html" id="menuDemarrer">Déverrouiller / Démarrer</a></li>
+							<li><a href="prolonger.html" id="menuProlonger">Prolonger</a></li>
+							<li><a href="incident.html" id="menuIncident">Signaler un incident</a></li>
+							<li><a href="terminer.html" id="menuTerminer">Terminer &amp; noter</a></li>
+							<li><a href="annuler.html" id="menuAnnuler">Annuler / Supprimer</a></li>
+						</ul>
+					</li>
+					<li><a href="reserver.html" id="navReserver">Réserver</a></li>
+					<li><a href="prolonger.html" id="navProlonger">Prolonger</a></li>
+					<li><a href="backoffice_mobilite.html">Espace Admin</a></li>
+					<li><a href="#" id="btnOpenUserModal">Connexion / User</a></li>
 				</ul>
 			</nav>
 
+			<!-- Main -->
 			<section id="main">
 				<div class="container">
 					<div class="row gtr-200">
 
 						<div class="col-12">
 							<div id="feedbackBox" class="alerte-feedback"></div>
-						</div>
 
-						<!-- COLONNE GAUCHE : Liste des pages d'actions empilées -->
-						<div class="col-4 col-12-medium">
-							<div class="sidebar">
-								<section class="box">
-									<h2 class="major"><span>Pages d'actions</span></h2>
-									<div class="pile-liens-actions">
-										<a href="reserver.html" class="button small" id="lienReserver">Réserver</a>
-										<a href="demarrer.html" class="button small alt" id="lienDemarrer">Déverrouiller / Démarrer</a>
-										<a href="prolonger.html" class="button small alt" id="lienProlonger">Prolonger</a>
-										<a href="incident.html" class="button small alt" id="lienIncident">Signaler un incident</a>
-										<a href="terminer.html" class="button small alt" id="lienTerminer">Terminer &amp; noter</a>
-										<a href="annuler.html" class="button small alt" id="lienAnnuler">Annuler / Supprimer</a>
-									</div>
-								</section>
+							<!-- Barre d'actions rapide en haut + statut User -->
+							<div class="barre-actions-haut">
+								<span class="titre-barre">Actions :</span>
+								<a href="reserver.html" class="button small" id="lienReserver">Réserver</a>
+								<a href="demarrer.html" class="button alt small" id="lienDemarrer">Déverrouiller / Démarrer</a>
+								<a href="prolonger.html" class="button alt small" id="lienProlonger">Prolonger</a>
+								<a href="incident.html" class="button alt small" id="lienIncident">Signaler un incident</a>
+								<a href="terminer.html" class="button alt small" id="lienTerminer">Terminer &amp; noter</a>
+								<a href="annuler.html" class="button alt small" id="lienAnnuler">Annuler / Supprimer</a>
+								<span class="user-badge-pill" id="userStatusDisplay" style="margin-left: auto;">Invité</span>
 							</div>
 						</div>
 
-						<!-- COLONNE DROITE : Choix Moto / Trottinette / Vélo + Locations disponibles -->
-						<div class="col-8 col-12-medium imp-medium">
-							<div class="content">
+						<!-- Liste des véhicules -->
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Choisir un type et une location</span></h2>
 
-								<section class="box">
-									<h2 class="major"><span>Choisir un type et une location</span></h2>
+								<div class="choix-type-bar" id="filterButtons">
+									<button type="button" class="button small" data-filter="moto">Moto</button>
+									<button type="button" class="button alt small" data-filter="trottinette">Trottinette</button>
+									<button type="button" class="button alt small" data-filter="velo">Vélo</button>
+									<button type="button" class="button alt small" data-filter="tous">Tous</button>
+									<button type="button" class="button alt small" id="btnResetDemo" style="margin-left: auto;">Réinitialiser</button>
+								</div>
 
-									<div class="choix-type-bar" id="filterButtons">
-										<button type="button" class="button small" data-filter="moto">Moto</button>
-										<button type="button" class="button alt small" data-filter="trottinette">Trottinette</button>
-										<button type="button" class="button alt small" data-filter="velo">Vélo</button>
-										<button type="button" class="button alt small" data-filter="tous">Tous</button>
-										<button type="button" class="button alt small" id="btnResetDemo" style="margin-left: auto;">Réinitialiser</button>
-									</div>
+								<div id="flotteContainer"></div>
+							</section>
+						</div>
 
-									<div id="flotteContainer"></div>
-								</section>
-
-								<section class="box">
-									<h2 class="major"><span>Mes locations</span></h2>
-									<div id="listeLocations"></div>
-								</section>
-
-							</div>
+						<!-- Mes locations -->
+						<div class="col-12">
+							<section class="box">
+								<h2 class="major"><span>Mes locations</span></h2>
+								<div id="listeLocations"></div>
+							</section>
 						</div>
 
 					</div>
 				</div>
 			</section>
 
+			<!-- Footer -->
 			<footer id="footer">
 				<div class="container">
 					<div id="copyright">
@@ -114,6 +133,40 @@
 
 		</div>
 
+		<!-- Modale Espace Utilisateur (User) -->
+		<div class="user-modal-backdrop" id="modalUserBackdrop" aria-hidden="true">
+			<div class="user-modal-card">
+				<div class="user-modal-header">
+					<h3 style="margin: 0;">Espace Utilisateur URBIX</h3>
+					<button type="button" class="button alt small" id="btnCloseUserModal" style="padding: 0.25em 0.65em; height: auto;">✕</button>
+				</div>
+
+				<div class="user-modal-tabs">
+					<button type="button" class="button small" id="tabLogin">Connexion</button>
+					<button type="button" class="button alt small" id="tabRegister">Inscription</button>
+				</div>
+
+				<form id="formUserAuth">
+					<div id="champNomGroup" style="display: none; margin-bottom: 0.75em;">
+						<label for="userNom">Nom complet</label>
+						<input type="text" id="userNom" placeholder="Ex: Ali Wizani" />
+					</div>
+					<div style="margin-bottom: 0.75em;">
+						<label for="userEmail">Email</label>
+						<input type="email" id="userEmail" placeholder="utilisateur@urbix.tn" required />
+					</div>
+					<div style="margin-bottom: 1em;">
+						<label for="userPassword">Mot de passe</label>
+						<input type="password" id="userPassword" placeholder="••••••••" required />
+					</div>
+					<div style="display: flex; gap: 0.5em; flex-wrap: wrap;">
+						<button type="submit" class="button small" id="btnSubmitAuth">Se connecter</button>
+						<button type="button" class="button alt small" id="btnLogoutUser" style="display: none;">Déconnexion</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 		<script src="../assets/js/jquery.min.js"></script>
 		<script src="../assets/js/jquery.dropotron.min.js"></script>
 		<script src="../assets/js/jquery.scrolly.min.js"></script>
@@ -124,6 +177,7 @@
 
 		<script>
 			const STORAGE_KEY = 'urbix_mobilite_state_v2';
+			const USER_STORAGE_KEY = 'urbix_current_user_v1';
 
 			const DEFAULT_IMAGES_BY_ID = {
 				V1: '../images/urbix-moto.png',
@@ -150,6 +204,8 @@
 			};
 
 			let state = loadState();
+			let currentUser = loadUser();
+			let authMode = 'login';
 			let timerInterval = null;
 
 			function loadState() {
@@ -174,6 +230,78 @@
 				localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 			}
 
+			function loadUser() {
+				try {
+					return JSON.parse(localStorage.getItem(USER_STORAGE_KEY) || 'null');
+				} catch (e) {
+					return null;
+				}
+			}
+
+			function renderUserUI() {
+				const statusEl = document.getElementById('userStatusDisplay');
+				const navBtn = document.getElementById('btnOpenUserModal');
+				const logoutBtn = document.getElementById('btnLogoutUser');
+
+				if (currentUser && currentUser.email) {
+					const label = currentUser.nom ? `${currentUser.nom} (${currentUser.email})` : currentUser.email;
+					statusEl.textContent = `Connecté : ${label}`;
+					navBtn.textContent = currentUser.nom || 'Mon Compte';
+					logoutBtn.style.display = 'inline-block';
+				} else {
+					statusEl.textContent = 'Utilisateur : Invité';
+					navBtn.textContent = 'Connexion / User';
+					logoutBtn.style.display = 'none';
+				}
+			}
+
+			function openUserModal(mode = 'login') {
+				authMode = mode;
+				document.getElementById('champNomGroup').style.display = mode === 'register' ? 'block' : 'none';
+				document.getElementById('btnSubmitAuth').textContent = mode === 'register' ? 'Créer le compte' : 'Se connecter';
+				document.getElementById('tabLogin').classList.toggle('alt', mode !== 'login');
+				document.getElementById('tabRegister').classList.toggle('alt', mode !== 'register');
+				document.getElementById('modalUserBackdrop').classList.add('open');
+			}
+
+			function closeUserModal() {
+				document.getElementById('modalUserBackdrop').classList.remove('open');
+			}
+
+			document.getElementById('btnOpenUserModal').addEventListener('click', (e) => {
+				e.preventDefault();
+				openUserModal('login');
+			});
+			document.getElementById('btnCloseUserModal').addEventListener('click', closeUserModal);
+			document.getElementById('modalUserBackdrop').addEventListener('click', (e) => {
+				if (e.target.id === 'modalUserBackdrop') closeUserModal();
+			});
+			document.getElementById('tabLogin').addEventListener('click', () => openUserModal('login'));
+			document.getElementById('tabRegister').addEventListener('click', () => openUserModal('register'));
+
+			document.getElementById('formUserAuth').addEventListener('submit', (e) => {
+				e.preventDefault();
+				const email = document.getElementById('userEmail').value.trim();
+				const nom = document.getElementById('userNom').value.trim();
+				if (!email) return;
+				currentUser = {
+					nom: nom || (currentUser && currentUser.nom) || email.split('@')[0],
+					email
+				};
+				localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(currentUser));
+				renderUserUI();
+				closeUserModal();
+				showFeedback(`Bienvenue ${currentUser.nom} !`);
+			});
+
+			document.getElementById('btnLogoutUser').addEventListener('click', () => {
+				currentUser = null;
+				localStorage.removeItem(USER_STORAGE_KEY);
+				renderUserUI();
+				closeUserModal();
+				showFeedback('Vous êtes déconnecté.');
+			});
+
 			function showFeedback(message) {
 				const box = document.getElementById('feedbackBox');
 				box.textContent = message;
@@ -197,12 +325,28 @@
 			function mettreAJourLiensActions() {
 				const vParam = state.selectedVehiculeId ? `?vehicule=${encodeURIComponent(state.selectedVehiculeId)}` : '';
 				const lParam = state.selectedLocationId ? `?loc=${encodeURIComponent(state.selectedLocationId)}` : '';
-				document.getElementById('lienReserver').href = `reserver.html${vParam}`;
-				document.getElementById('lienDemarrer').href = `demarrer.html${lParam}`;
-				document.getElementById('lienProlonger').href = `prolonger.html${lParam}`;
-				document.getElementById('lienIncident').href = `incident.html${lParam}`;
-				document.getElementById('lienTerminer').href = `terminer.html${lParam}`;
-				document.getElementById('lienAnnuler').href = `annuler.html${lParam}`;
+
+				const pairs = [
+					['lienReserver', `reserver.html${vParam}`],
+					['menuReserver', `reserver.html${vParam}`],
+					['navReserver', `reserver.html${vParam}`],
+					['lienDemarrer', `demarrer.html${lParam}`],
+					['menuDemarrer', `demarrer.html${lParam}`],
+					['lienProlonger', `prolonger.html${lParam}`],
+					['menuProlonger', `prolonger.html${lParam}`],
+					['navProlonger', `prolonger.html${lParam}`],
+					['lienIncident', `incident.html${lParam}`],
+					['menuIncident', `incident.html${lParam}`],
+					['lienTerminer', `terminer.html${lParam}`],
+					['menuTerminer', `terminer.html${lParam}`],
+					['lienAnnuler', `annuler.html${lParam}`],
+					['menuAnnuler', `annuler.html${lParam}`]
+				];
+
+				pairs.forEach(([id, href]) => {
+					const el = document.getElementById(id);
+					if (el) el.href = href;
+				});
 			}
 
 			function choisirVehiculeEtAllerReserver(vehiculeId) {
@@ -330,6 +474,7 @@
 				renderFlotte();
 				renderLocations();
 				mettreAJourLiensActions();
+				renderUserUI();
 				saveState();
 			}
 

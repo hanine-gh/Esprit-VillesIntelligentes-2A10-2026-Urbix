@@ -11,8 +11,14 @@ SET NAMES utf8mb4;
 ALTER TABLE users
     ADD COLUMN IF NOT EXISTS admin_scope ENUM('tout','bus') NOT NULL DEFAULT 'tout' AFTER role;
 
--- adminBus : uniquement la gestion des bus
-UPDATE users SET admin_scope = 'bus' WHERE email = 'adminBus@gmail.com';
+-- adminBus : uniquement la gestion des bus (créé s'il n'existe pas, mot de passe admin123)
+INSERT INTO users (nom, prenom, email, password, date_naissance, genre, telephone, type_service, role, admin_scope)
+VALUES ('Admin', 'Bus', 'adminBus@gmail.com',
+        '$2y$10$iX5uBbCcyDnyy6MENkUVWeu1/X4GL3F0jiV1jc.E.u4ejbM3e79D6',
+        '2000-01-01', 'homme', '00000000', 'utilisateur_normal', 'admin', 'bus')
+ON DUPLICATE KEY UPDATE
+    role        = 'admin',
+    admin_scope = 'bus';
 
 -- adminadmin : super administrateur (mot de passe admin123, stocké haché)
 INSERT INTO users (nom, prenom, email, password, date_naissance, genre, telephone, type_service, role, admin_scope)
